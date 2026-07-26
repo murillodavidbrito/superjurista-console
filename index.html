@@ -477,30 +477,55 @@ async function carregarFila(){
 }
 
 /* ---- semaforo: le o que o Mac publica; sem noticia, diz que nao ha noticia ---- */
-async function carregarSinais(){
-  let dados = demo
-    ? {sessoes:{PJE:{ok:true,ate:'5h20'}, SEEU:{ok:true,ate:'5h20'},
-                Lifesize:{ok:false,nota:'sem acesso a esta vara'}}, batimento:'agora'}
-    : null;
-  if(!dados){
-    try{ dados = await (await fetch('sessoes.json',{cache:'no-store'})).json(); }
-    catch{ dados = {sessoes:{}, batimento:null}; }
-  }
+const DEMO_SESSOES = {
+  gerado: new Date().toISOString(), batimento: new Date().toISOString(),
+  sessoes: {
+    'PJe':        {nivel:'ok',    ate:'2h52', nota:''},
+    'SEEU':       {nivel:'aviso', ate:'',     nota:'sem vigia de sessão'},
+    'PJe Mídias': {nivel:'ok',    ate:'',     nota:''},
+  },
+};
+
+/* Ha quanto tempo o Mac nao publica. E a unica coisa que distingue "nada
+   acontecendo" de "o Mac esta desligado" -- e quem esta longe nao pode ficar
+   adivinhando qual dos dois e. */
+function idadeDoBatimento(iso){
+  if(!iso) return null;
+  const min = Math.round((Date.now() - new Date(iso)) / 60000);
+  return min < 0 ? 0 : min;
+}
+
+function pintarSinais(dados){
   const cx = $('#sinais'); cx.replaceChildren();
-  const entradas = Object.entries(dados.sessoes || {});
-  if(!entradas.length){
+  const idade = idadeDoBatimento(dados && dados.batimento);
+  const mudo = idade === null || idade > 5;   /* o executor publica a cada minuto */
+
+  if(mudo){
     const s = document.createElement('span'); s.className = 'sinal';
-    s.innerHTML = '<i class="bolha"></i>';
-    s.append(document.createTextNode('sem notícia do Mac'));
+    const b = document.createElement('i'); b.className = 'bolha ruim';
+    s.append(b, document.createTextNode(
+      idade === null ? 'sem notícia do Mac' : `Mac calado há ${idade} min`));
+    s.title = 'O executor publica a cada minuto. Silêncio longo = máquina desligada, ' +
+              'dormindo, ou parada na tela de senha.';
     cx.append(s); return;
   }
-  for(const [nome, v] of entradas){
+
+  for(const [nome, v] of Object.entries(dados.sessoes || {})){
     const s = document.createElement('span'); s.className = 'sinal';
     const b = document.createElement('i');
-    b.className = 'bolha ' + (v.ok ? 'ok' : v.nota ? 'alerta' : 'ruim');
-    s.append(b, document.createTextNode(nome));
-    s.title = v.ok ? `válido por mais ${v.ate}` : (v.nota || 'fora do ar');
+    b.className = 'bolha ' + ({ok:'ok', aviso:'alerta', erro:'ruim'}[v.nivel] || '');
+    s.append(b, document.createTextNode(nome + (v.ate ? ` ${v.ate}` : '')));
+    s.title = v.nota || (v.ate ? `válido por mais ${v.ate}` : 'sessão viva');
     cx.append(s);
+  }
+}
+
+async function carregarSinais(){
+  if(demo) return pintarSinais(DEMO_SESSOES);
+  try{
+    pintarSinais(await (await fetch('sessoes.json', {cache:'no-store'})).json());
+  }catch{
+    pintarSinais(null);
   }
 }
 
@@ -554,6 +579,7 @@ $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.v
 
 carregarSinais();
 carregarFila();
+if(!demo) setInterval(carregarSinais, 60000);
 if(!demo) setInterval(carregarFila, 60000);
 </script>
 </body>
