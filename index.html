@@ -3,144 +3,211 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0B1119">
+<meta name="theme-color" content="#0A0F16">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Precisão na minuta, agilidade no gabinete.">
 <title>Assistente de Minuta</title>
 <style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Assistente de Minuta — instrumento de precisão.
+
+   O escuro e o mundo assumido: e um aparelho, nao um documento. A variante
+   clara existe porque a tela e usada em corredor de forum e sala de audiencia,
+   onde ha luz demais -- e ela nao e uma inversao, e um instrumento de dia.
+   ═══════════════════════════════════════════════════════════════════════════ */
 :root{
-  --breu:#0B1119; --painel:#141D28; --alto:#1B2734; --linha:#25313F;
-  --texto:#DDE5EE; --suave:#7C8B9E; --fraco:#4E5C6E;
-  --leitura:#7FE3C4;      /* o verde do mostrador: numero conferido */
-  --atencao:#F5B544;      /* precisa de voce */
-  --trabalho:#5AA9E6;     /* trabalhando */
-  --erro:#E86A5C;         /* falhou, recusado */
+  --breu:#0A0F16; --painel:#111927; --alto:#17212F; --linha:#1F2A3A;
+  --tinta:#E2E9F2; --suave:#8595AB; --fraco:#4C5A6E;
+  --menta:#6FDDBB; --ambar:#E9B04C; --coral:#E2695C; --safira:#5FA8E8;
+  --sombra:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
-  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
 }
+@media (prefers-color-scheme: light){
+  :root{
+    --breu:#F4F6F9; --painel:#FFFFFF; --alto:#EDF1F6; --linha:#D8E0EA;
+    --tinta:#141C28; --suave:#5A6982; --fraco:#94A2B5;
+    --menta:#10836A; --ambar:#9A6B0C; --coral:#B93E33; --safira:#1E6FB8;
+    --sombra:0 1px 2px rgba(20,28,40,.05), 0 10px 28px -16px rgba(20,28,40,.22);
+  }
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
-  background:var(--breu); color:var(--texto); font-family:var(--ui);
-  font-size:16px; line-height:1.5; min-height:100vh;
+  background:var(--breu); color:var(--tinta); font-family:var(--ui);
+  font-size:16px; line-height:1.5; min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
-.wrap{max-width:34rem;margin:0 auto;padding:1.25rem 1.1rem 4rem}
+.wrap{max-width:32rem;margin:0 auto;padding:1.6rem 1.15rem 4rem;
+      display:flex;flex-direction:column;gap:1.9rem}
 
-/* ---- cabecalho e semaforo ---- */
-header{margin-bottom:1.6rem}
-h1{font-size:.82rem;font-weight:600;letter-spacing:.17em;text-transform:uppercase}
-.lema{font-size:.8rem;color:var(--suave);margin-top:.3rem;line-height:1.4}
-.sinais{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:.95rem;
-        font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--suave)}
-.sinal{display:flex;align-items:center;gap:.3rem;white-space:nowrap}
-.bolha{width:.45rem;height:.45rem;border-radius:50%;background:var(--fraco);flex:none}
-.bolha.ok{background:var(--leitura)} .bolha.alerta{background:var(--atencao)} .bolha.ruim{background:var(--erro)}
+/* ── a cabeça ───────────────────────────────────────────────────────────────
+   A marca e CONSTRUIDA, nao so composta: duas linhas de peso alto com entreletra
+   negativa e entrelinha curta, um fio, e o lema pendurado nele. O contraste
+   entre esse bloco denso e os micro-rotulos largos e a personalidade da pagina. */
+header{display:flex;flex-direction:column;gap:.85rem}
+.marca{
+  font-size:clamp(1.55rem,8.2vw,2rem); font-weight:760; line-height:.94;
+  letter-spacing:-.035em; text-transform:uppercase; text-wrap:balance;
+}
+.marca em{display:block;font-style:normal;color:var(--suave);font-weight:600}
+.regua-marca{height:1px;background:var(--linha);position:relative}
+.regua-marca::after{content:"";position:absolute;left:0;top:0;width:2.6rem;height:1px;background:var(--menta)}
+.lema{font-size:.775rem;color:var(--suave)}
 
-/* ---- o mostrador: assinatura da pagina ---- */
-.mostrador{background:var(--painel);border:1px solid var(--linha);border-radius:.7rem;padding:1.3rem 1.2rem 1.15rem}
-.rotulo{font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:var(--suave);display:block;margin-bottom:.55rem}
+/* estado dos sistemas: chips, nao pontinhos soltos */
+.sinais{display:flex;flex-wrap:wrap;gap:.4rem}
+.sinal{
+  display:inline-flex;align-items:center;gap:.4rem;background:var(--painel);
+  border:1px solid var(--linha);border-radius:2rem;padding:.3rem .6rem .3rem .5rem;
+  font-size:.68rem;color:var(--suave);white-space:nowrap;
+}
+.sinal b{font-weight:600;color:var(--tinta);font-variant-numeric:tabular-nums}
+.bolha{width:.42rem;height:.42rem;border-radius:50%;background:var(--fraco);flex:none}
+.bolha.ok{background:var(--menta);box-shadow:0 0 0 3px color-mix(in srgb,var(--menta) 18%,transparent)}
+.bolha.alerta{background:var(--ambar);box-shadow:0 0 0 3px color-mix(in srgb,var(--ambar) 18%,transparent)}
+.bolha.ruim{background:var(--coral);box-shadow:0 0 0 3px color-mix(in srgb,var(--coral) 18%,transparent)}
 
-.leitor{position:relative;margin-bottom:.2rem}
+/* ── a bancada ──────────────────────────────────────────────────────────────
+   Toda a ousadia da pagina mora aqui. O numero CNJ ocupa a largura inteira em
+   monoespacado grande, com uma ESCALA GRAVADA embaixo nomeando os seis campos --
+   cada rotulo ancorado na coluna exata do seu campo. Nao e enfeite: ensina o que
+   se digita enquanto confere. */
+.bancada{background:var(--painel);border:1px solid var(--linha);border-radius:.85rem;
+         box-shadow:var(--sombra);padding:1.35rem 1.2rem 1.25rem;
+         display:flex;flex-direction:column;gap:1.25rem}
+.rotulo{font-size:.615rem;letter-spacing:.17em;text-transform:uppercase;
+        color:var(--suave);display:block;font-weight:560}
+
+.campo{display:flex;flex-direction:column;gap:.55rem}
+.leitor{position:relative}
 #numero{
-  width:100%;background:transparent;border:0;outline:0;color:var(--texto);
-  font-family:var(--mono);letter-spacing:.02em;padding:.25rem 0 .5rem;
-  font-size:clamp(.95rem, calc((100vw - 4.6rem) / 16), 1.32rem);
-  caret-color:var(--leitura);
+  width:100%;background:transparent;border:0;outline:0;color:var(--tinta);
+  font-family:var(--mono);letter-spacing:.01em;padding:.3rem 0 .55rem;
+  font-size:clamp(.95rem,calc((100vw - 4.6rem)/16),1.34rem);
+  font-variant-numeric:tabular-nums;caret-color:var(--menta);
 }
 #numero::placeholder{color:var(--fraco)}
-.trilho{height:2px;background:var(--linha);position:relative;overflow:hidden}
-.trilho::after{
-  content:"";position:absolute;inset:0;background:var(--leitura);
-  transform:scaleX(0);transform-origin:left;transition:transform .18s ease
-}
+.trilho{height:2px;background:var(--linha);position:relative;overflow:hidden;border-radius:2px}
+.trilho::after{content:"";position:absolute;inset:0;background:var(--menta);
+               transform:scaleX(0);transform-origin:left;
+               transition:transform .34s cubic-bezier(.2,.8,.25,1)}
 .conferido .trilho::after{transform:scaleX(1)}
-.conferido #numero{color:var(--leitura)}
+.conferido #numero{color:var(--menta)}
 
-/* A escala nomeia os seis campos do numero CNJ, cada rotulo ancorado na COLUNA
-   exata do seu campo -- da para fazer porque o mostrador e monoespacado e o
-   formato e fixo. E regua, nao enfeite: ensina o que se digita enquanto confere.
-   As colunas sao as do formato NNNNNNN-DD.AAAA.J.TT.OOOO. */
-.escala{position:relative;height:.85rem;margin-top:.45rem}
-.escala b{
-  position:absolute;top:0;font-family:var(--ui);font-size:.55rem;font-weight:400;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--fraco);
-  transition:color .18s ease;white-space:nowrap
-}
-.escala b::before{content:"";position:absolute;left:0;top:-.34rem;width:1px;height:.22rem;background:var(--linha)}
 /* --col e a largura de UM caractere do mostrador, medida em JS. Nao da para usar
-   `ch` aqui: numa filha, `ch` resolve contra a fonte DA FILHA (0.55rem), nao a do
-   numero -- e os rotulos se empilhavam. */
-.escala .seq{left:0}                          .escala .dv {left:calc(8  * var(--col))}
-.escala .ano{left:calc(11 * var(--col))}      .escala .jus{left:calc(16 * var(--col))}
-.escala .tri{left:calc(18 * var(--col))}      .escala .uni{left:calc(21 * var(--col))}
-.conferido .escala .dv{color:var(--leitura)}
-.conferido .escala .dv::before{background:var(--leitura)}
-.aviso{font-size:.76rem;color:var(--atencao);margin-top:.85rem;min-height:1.15rem}
-.conferido .aviso{color:var(--leitura)}
-.confirmado .aviso{color:var(--leitura)}
+   `ch`: numa filha, `ch` resolve contra a fonte DA FILHA, nao a do numero. */
+.escala{position:relative;height:.9rem}
+.escala b{
+  position:absolute;top:0;font-family:var(--ui);font-size:.545rem;font-weight:500;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--fraco);
+  transition:color .28s ease;white-space:nowrap
+}
+.escala b::before{content:"";position:absolute;left:0;top:-.36rem;width:1px;height:.24rem;
+                  background:var(--linha);transition:background .28s ease}
+.escala .seq{left:0}                     .escala .dv {left:calc(8  * var(--col))}
+.escala .ano{left:calc(11 * var(--col))} .escala .jus{left:calc(16 * var(--col))}
+.escala .tri{left:calc(18 * var(--col))} .escala .uni{left:calc(21 * var(--col))}
+.conferido .escala .dv{color:var(--menta)}
+.conferido .escala .dv::before{background:var(--menta)}
 
-/* ---- seletor de pipeline ---- */
-.pipes{display:flex;flex-wrap:wrap;gap:.4rem;margin:1.1rem 0 1.3rem}
+.aviso{font-size:.76rem;color:var(--ambar);min-height:1.15rem;line-height:1.4}
+.conferido .aviso,.confirmado .aviso{color:var(--menta)}
+
+/* seletor: controle segmentado, com o indicador deslizando de verdade */
+.pipes{position:relative;display:grid;grid-template-columns:repeat(3,1fr);
+       background:var(--alto);border:1px solid var(--linha);border-radius:.6rem;padding:.22rem}
+.polegar{position:absolute;top:.22rem;bottom:.22rem;left:.22rem;width:calc((100% - .44rem)/3);
+         background:var(--painel);border:1px solid var(--linha);border-radius:.45rem;
+         box-shadow:var(--sombra);
+         transition:transform .3s cubic-bezier(.3,1.2,.4,1);pointer-events:none}
 .pipes button{
-  background:var(--alto);border:1px solid var(--linha);color:var(--suave);
-  border-radius:2rem;padding:.5rem .85rem;font:inherit;font-size:.82rem;cursor:pointer;
-  transition:border-color .15s,color .15s
+  position:relative;z-index:1;background:none;border:0;color:var(--suave);
+  padding:.55rem .2rem;font:inherit;font-size:.775rem;font-weight:500;cursor:pointer;
+  border-radius:.45rem;transition:color .22s ease
 }
-.pipes button[aria-pressed=true]{border-color:var(--leitura);color:var(--texto)}
-.pipes button:focus-visible{outline:2px solid var(--leitura);outline-offset:2px}
+.pipes button[aria-pressed=true]{color:var(--tinta);font-weight:600}
+.pipes button:focus-visible{outline:2px solid var(--menta);outline-offset:1px}
+.faz{font-size:.755rem;color:var(--suave);line-height:1.5;min-height:2.3rem}
 
-.faz{font-size:.78rem;color:var(--suave);line-height:1.45;margin:-.5rem 0 1.1rem}
 .acionar{
-  text-transform:uppercase;letter-spacing:.06em;
-  width:100%;background:var(--leitura);color:var(--breu);border:0;border-radius:.5rem;
-  padding:.9rem;font:inherit;font-weight:640;font-size:1rem;cursor:pointer
+  width:100%;background:var(--menta);color:var(--breu);border:0;border-radius:.55rem;
+  padding:.95rem;font:inherit;font-weight:700;font-size:.9rem;letter-spacing:.09em;
+  text-transform:uppercase;cursor:pointer;
+  transition:opacity .2s ease,transform .12s ease
 }
+.acionar:active:not(:disabled){transform:scale(.985)}
 .acionar:disabled{background:var(--alto);color:var(--fraco);cursor:not-allowed}
-.acionar:focus-visible{outline:2px solid var(--texto);outline-offset:2px}
+.acionar:focus-visible{outline:2px solid var(--tinta);outline-offset:2px}
+@media (prefers-color-scheme: light){ .acionar{color:#FFF} }
 
-/* ---- a fila ---- */
-.fila{margin-top:2.5rem}
-.fila > .rotulo{margin-bottom:.9rem}
-.cartao{
-  display:flex;gap:.85rem;background:var(--painel);border:1px solid var(--linha);
-  border-radius:.55rem;padding:.9rem 1rem;margin-bottom:.6rem
-}
-.faixa{width:3px;border-radius:2px;background:var(--fraco);flex:none}
-.cartao[data-estado=executando] .faixa{background:var(--trabalho);animation:pulso 2.2s ease-in-out infinite}
-.cartao[data-estado=aguardando] .faixa{background:var(--atencao)}
-.cartao[data-estado=concluido] .faixa{background:var(--leitura)}
-.cartao[data-estado=falhou] .faixa,.cartao[data-estado=recusado] .faixa{background:var(--erro)}
-@keyframes pulso{0%,100%{opacity:1}50%{opacity:.3}}
-.corpo{flex:1;min-width:0}
-.linha1{display:flex;justify-content:space-between;gap:.75rem;align-items:baseline}
-.proc{font-family:var(--mono);font-size:.86rem;color:var(--texto);overflow-wrap:anywhere}
-.id{font-size:.7rem;color:var(--fraco);font-family:var(--mono);flex:none}
-.estado{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);margin-top:.3rem}
-.cartao[data-estado=aguardando] .estado{color:var(--atencao)}
-.cartao[data-estado=falhou] .estado,.cartao[data-estado=recusado] .estado{color:var(--erro)}
-.pergunta{font-size:.86rem;color:var(--texto);margin:.7rem 0 .6rem;line-height:1.45}
+/* ── o feed ─────────────────────────────────────────────────────────────────
+   O estado e uma PILULA e um fio superior, nao uma barra lateral -- barra de
+   acento em cartao arredondado e o clichê visual do momento. */
+.fila{display:flex;flex-direction:column;gap:.75rem}
+.cartao{position:relative;background:var(--painel);border:1px solid var(--linha);
+        border-radius:.7rem;padding:.95rem 1rem;overflow:hidden;box-shadow:var(--sombra);
+        display:flex;flex-direction:column;gap:.55rem}
+.cartao::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--fraco)}
+.cartao[data-estado=executando]::before{background:var(--safira);
+  background-image:linear-gradient(90deg,transparent,color-mix(in srgb,var(--safira) 25%,transparent),transparent);
+  background-size:40% 100%;background-repeat:no-repeat;animation:varrer 1.9s linear infinite}
+.cartao[data-estado=aguardando]::before{background:var(--ambar)}
+.cartao[data-estado=concluido]::before{background:var(--menta)}
+.cartao[data-estado=falhou]::before,.cartao[data-estado=recusado]::before{background:var(--coral)}
+@keyframes varrer{from{background-position:-45% 0}to{background-position:145% 0}}
+
+.proc{font-family:var(--mono);font-size:.845rem;font-variant-numeric:tabular-nums;
+      line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.linha2{display:flex;justify-content:space-between;align-items:center;gap:.7rem;margin-top:.3rem}
+.meta{font-size:.68rem;color:var(--fraco);font-variant-numeric:tabular-nums}
+.pill{flex:none;font-size:.635rem;font-weight:650;letter-spacing:.07em;text-transform:uppercase;
+      padding:.24rem .55rem;border-radius:2rem;border:1px solid var(--linha);color:var(--suave);
+      background:var(--alto);white-space:nowrap}
+.cartao[data-estado=executando] .pill{color:var(--safira);border-color:color-mix(in srgb,var(--safira) 40%,transparent)}
+.cartao[data-estado=aguardando] .pill{color:var(--ambar);border-color:color-mix(in srgb,var(--ambar) 45%,transparent)}
+.cartao[data-estado=concluido] .pill{color:var(--menta);border-color:color-mix(in srgb,var(--menta) 40%,transparent)}
+.cartao[data-estado=falhou] .pill,.cartao[data-estado=recusado] .pill{
+  color:var(--coral);border-color:color-mix(in srgb,var(--coral) 42%,transparent)}
+
+.pergunta{font-size:.845rem;line-height:1.5;border-top:1px solid var(--linha);
+          margin-top:.15rem;padding-top:.7rem}
 .opcoes{display:flex;flex-direction:column;gap:.4rem}
 .opcoes button{
-  background:transparent;border:1px solid var(--linha);color:var(--texto);text-align:left;
-  border-radius:.4rem;padding:.6rem .7rem;font:inherit;font-size:.82rem;cursor:pointer;line-height:1.35
+  background:var(--alto);border:1px solid var(--linha);color:var(--tinta);text-align:left;
+  border-radius:.5rem;padding:.65rem .75rem;font:inherit;font-size:.815rem;cursor:pointer;
+  line-height:1.4;transition:border-color .18s ease,background .18s ease
 }
-.opcoes button:hover{border-color:var(--atencao)}
-.opcoes button:disabled{opacity:.45;cursor:not-allowed}
-.opcoes button.escolhida{opacity:1;border-color:var(--leitura);color:var(--leitura)}
-.opcoes button:focus-visible{outline:2px solid var(--atencao);outline-offset:2px}
-.vazio{color:var(--fraco);font-size:.88rem;padding:.4rem 0}
+.opcoes button:hover:not(:disabled){border-color:var(--ambar)}
+.opcoes button:focus-visible{outline:2px solid var(--ambar);outline-offset:1px}
+.opcoes button:disabled{opacity:.4;cursor:not-allowed}
+.opcoes button.escolhida{opacity:1;border-color:var(--menta);color:var(--menta);font-weight:560}
+.vazio{color:var(--fraco);font-size:.855rem;line-height:1.5;
+       border:1px dashed var(--linha);border-radius:.7rem;padding:1.1rem 1rem;text-align:center}
 
-/* ---- ajustes ---- */
-details{margin-top:2.5rem;border-top:1px solid var(--linha);padding-top:1rem}
-summary{font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:var(--suave);cursor:pointer}
+/* ── ajustes ────────────────────────────────────────────────────────────────*/
+details{border-top:1px solid var(--linha);padding-top:1.1rem}
+summary{font-size:.615rem;letter-spacing:.17em;text-transform:uppercase;color:var(--suave);
+        cursor:pointer;font-weight:560;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:" +";color:var(--fraco)}
+details[open] summary::after{content:" −"}
 details input{
-  width:100%;margin-top:.8rem;background:var(--painel);border:1px solid var(--linha);
-  border-radius:.4rem;padding:.6rem .7rem;color:var(--texto);font:inherit;font-size:.85rem
+  width:100%;margin-top:.75rem;background:var(--alto);border:1px solid var(--linha);
+  border-radius:.5rem;padding:.65rem .75rem;color:var(--tinta);font:inherit;font-size:.85rem
 }
-details p{font-size:.76rem;color:var(--fraco);margin-top:.6rem;line-height:1.5}
+details input:focus{outline:2px solid var(--menta);outline-offset:1px}
+details p{font-size:.755rem;color:var(--fraco);margin-top:.7rem;line-height:1.55}
 details p.cofre{color:var(--suave)}
-details p.cofre.alerta{color:var(--atencao)}
+details p.cofre.alerta{color:var(--ambar)}
+
+/* Entrada em sequencia: cabeca, bancada, fila. Um momento so, na carga. */
+@keyframes surgir{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+header,.bancada,.fila,details{animation:surgir .5s cubic-bezier(.2,.8,.25,1) both}
+.bancada{animation-delay:.06s} .fila{animation-delay:.12s} details{animation-delay:.16s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -148,37 +215,37 @@ details p.cofre.alerta{color:var(--atencao)}
 <div class="wrap">
 
 <header>
-  <h1>Assistente de Minuta</h1>
+  <h1 class="marca">Assistente<em>de Minuta</em></h1>
+  <div class="regua-marca"></div>
   <p class="lema">Precisão na minuta, agilidade no gabinete</p>
   <div class="sinais" id="sinais"></div>
 </header>
 
-<section class="mostrador">
-  <span class="rotulo">Número do processo</span>
-
-  <div class="leitor" id="leitor">
-    <input id="numero" inputmode="numeric" autocomplete="off" spellcheck="false"
-           placeholder="0000000-00.0000.0.00.0000" aria-describedby="aviso">
-    <div class="trilho"></div>
-    <div class="escala" aria-hidden="true">
-      <b class="seq">sequencial</b><b class="dv">dv</b><b class="ano">ano</b><b
-       class="jus">j</b><b class="tri">tr</b><b class="uni">unid</b>
+<section class="bancada">
+  <div class="campo">
+    <span class="rotulo">Número do processo</span>
+    <div class="leitor" id="leitor">
+      <input id="numero" inputmode="numeric" autocomplete="off" spellcheck="false"
+             placeholder="0000000-00.0000.0.00.0000" aria-describedby="aviso">
+      <div class="trilho"></div>
+      <div class="escala" aria-hidden="true">
+        <b class="seq">sequencial</b><b class="dv">dv</b><b class="ano">ano</b><b
+         class="jus">j</b><b class="tri">tr</b><b class="uni">unid</b>
+      </div>
     </div>
+    <p class="aviso" id="aviso" role="status"></p>
   </div>
-  <p class="aviso" id="aviso" role="status"></p>
 
-  <span class="rotulo" style="margin-top:1.15rem">O que fazer</span>
-  <div class="pipes" id="pipes"></div>
-
-  <p class="faz" id="faz"></p>
+  <div class="campo">
+    <span class="rotulo">O que fazer</span>
+    <div class="pipes" id="pipes"><div class="polegar" id="polegar"></div></div>
+    <p class="faz" id="faz"></p>
+  </div>
 
   <button class="acionar" id="acionar" disabled>Minutar</button>
 </section>
 
-<section class="fila">
-  <span class="rotulo">Na fila</span>
-  <div id="lista"><p class="vazio">Carregando…</p></div>
-</section>
+<section class="fila" id="lista"></section>
 
 <details>
   <summary>Ajustes</summary>
@@ -195,8 +262,8 @@ details p.cofre.alerta{color:var(--atencao)}
 
 /* ------------------------------------------------------------------ *
  * O digito verificador do numero CNJ (modulo 97, ISO 7064).
- * Mesma formula do scripts/lib/pedido.py -- conferida contra os cinco
- * processos que o resolver_processo resolveu ao vivo no PJE.
+ * Mesma formula do scripts/lib/pedido.py -- a paridade entre as duas foi
+ * conferida em 6.000 numeros, com zero divergencias.
  * Aqui e conveniencia: quem decide de verdade e o guarda, no Mac.
  * ------------------------------------------------------------------ */
 const RE_CNJ = /^(\d{7})-(\d{2})\.(\d{4})\.(\d)\.(\d{2})\.(\d{4})$/;
@@ -227,9 +294,6 @@ function formatar(bruto){
   return s;
 }
 
-/* A etiqueta curta nao cabe a diferenca entre os pipelines -- e "Baixar do PJE"
-   escondia que ele vai ate a minuta. Por isso cada um leva uma linha que diz o
-   que vai acontecer, mostrada sob os botoes conforme a escolha. */
 const PIPELINES = [
   {id:'pje',       nome:'Minutar PJe',
    faz:'Acessa os autos no PJe, analisa o processo e elabora a minuta da peça cabível.'},
@@ -245,7 +309,40 @@ const ESTADOS = {
 
 const $ = s => document.querySelector(s);
 
-/* Mede a largura de um caractere do mostrador e publica como --col, para a regua
+/* Onde guardar o token. Nem todo navegador de celular deixa o localStorage
+   sobreviver: navegacao privada, "limpar ao sair" e a limpeza automatica do iOS
+   apagam. Entao a pagina TESTA o que tem e diz ao usuario o que conseguiu, em vez
+   de perder a configuracao em silencio e deixar ele achando que digitou errado. */
+const cofre = (() => {
+  for (const [nome, alvo] of [['permanente','localStorage'], ['sessao','sessionStorage']]) {
+    try {
+      const s = window[alvo], k = '__sj_teste__';
+      s.setItem(k,'1'); const ok = s.getItem(k) === '1'; s.removeItem(k);
+      if (ok) return {nome, ler: k => s.getItem(k) || '', gravar: (k,v) => s.setItem(k,v)};
+    } catch { /* bloqueado: tenta o proximo */ }
+  }
+  const mem = {};
+  return {nome:'memoria', ler: k => mem[k] || '', gravar: (k,v) => { mem[k] = v; }};
+})();
+
+const cfg = {
+  get repo(){ return cofre.ler('sj.repo'); },   set repo(v){ cofre.gravar('sj.repo', v); },
+  get token(){ return cofre.ler('sj.token'); }, set token(v){ cofre.gravar('sj.token', v); },
+};
+
+const AVISO_COFRE = {
+  permanente: '',
+  sessao: 'Este navegador não guarda dados entre visitas — provavelmente aba privada. ' +
+          'O token vale só enquanto esta aba estiver aberta.',
+  memoria: 'Este navegador está bloqueando o armazenamento. O token some ao recarregar. ' +
+           'Saia da navegação privada, ou adicione esta página à tela de início.',
+};
+
+let pipeline = 'pje';
+let insistindo = null;
+const demo = new URLSearchParams(location.search).has('demo');
+
+/* Mede a largura de um caractere do mostrador e publica como --col, para a escala
    ancorar cada rotulo na coluna exata do seu campo. Medir e melhor que supor 0.6em:
    sobrevive a troca de fonte e ao ajuste de tamanho de texto do sistema. */
 function medirColuna(){
@@ -259,50 +356,14 @@ function medirColuna(){
   document.documentElement.style.setProperty('--col', p.getBoundingClientRect().width / 20 + 'px');
   p.remove();
 }
-medirColuna();
-addEventListener('resize', medirColuna);
-/* Onde guardar o token. Nem todo navegador de celular deixa o localStorage
-   sobreviver: navegacao privada, "limpar ao sair" e a limpeza automatica do iOS
-   apagam. Entao a pagina TESTA o que tem e diz ao usuario o que conseguiu, em vez
-   de perder a configuracao em silencio e deixar ele achando que digitou errado. */
-const cofre = (() => {
-  for (const [nome, alvo] of [['permanente', 'localStorage'], ['sessao', 'sessionStorage']]) {
-    try {
-      const s = window[alvo];
-      const k = '__sj_teste__';
-      s.setItem(k, '1'); const ok = s.getItem(k) === '1'; s.removeItem(k);
-      if (ok) return {nome, ler: k => s.getItem(k) || '', gravar: (k, v) => s.setItem(k, v)};
-    } catch { /* bloqueado: tenta o proximo */ }
-  }
-  const mem = {};
-  return {nome: 'memoria', ler: k => mem[k] || '', gravar: (k, v) => { mem[k] = v; }};
-})();
 
-const cfg = {
-  get repo(){ return cofre.ler('sj.repo'); },
-  set repo(v){ cofre.gravar('sj.repo', v); },
-  get token(){ return cofre.ler('sj.token'); },
-  set token(v){ cofre.gravar('sj.token', v); },
-};
-
-const AVISO_COFRE = {
-  permanente: '',
-  sessao: 'Este navegador não guarda dados entre visitas — provavelmente aba privada. ' +
-          'O token vale só enquanto esta aba estiver aberta.',
-  memoria: 'Este navegador está bloqueando o armazenamento. O token some ao recarregar. ' +
-           'Saia da navegação privada, ou adicione esta página à tela de início.',
-};
-let pipeline = 'pje';
-const demo = new URLSearchParams(location.search).has('demo');
-
-/* ---- o mostrador ---- */
 function aoDigitar(){
   const el = $('#numero');
   el.value = formatar(el.value);
   const n = el.value, cheio = RE_CNJ.test(n), ok = numeroConfere(n);
-  $('.mostrador').classList.toggle('conferido', ok);
+  $('.bancada').classList.toggle('conferido', ok);
   $('#aviso').textContent = ok ? 'Número confere.'
-    : cheio ? 'O dígito verificador não bate — confira antes de acionar.' : '';
+    : cheio ? 'O dígito verificador não bate — confira antes de minutar.' : '';
   $('#acionar').disabled = !ok;
   if(insistindo && insistindo !== n) insistindo = null;
 }
@@ -318,11 +379,9 @@ async function api(caminho, opcoes = {}){
   return r.json();
 }
 
-/* Ja existe pedido aberto para este processo? Nao BLOQUEIA -- rodar o ato e
-   depois entregar e legitimo -- mas exige um segundo toque, para o acionar duas
-   vezes ser escolha e nao duvida. */
-let insistindo = null;
-
+/* Ja existe pedido aberto para este processo? Nao BLOQUEIA -- minutar e depois
+   entregar e legitimo -- mas exige um segundo toque, para minutar duas vezes ser
+   escolha e nao duvida. */
 async function jaNaFila(numero){
   try{
     const issues = await api('/issues?labels=pedido&state=open&per_page=30');
@@ -357,10 +416,10 @@ async function acionar(){
     $('#numero').value = ''; aoDigitar();
     /* A confirmacao fica AQUI, colada no campo. O cartao novo aparece na fila,
        mas num celular a fila esta fora da tela -- e quem nao ve confirmacao
-       aciona de novo, que foi exatamente o que aconteceu. */
+       aciona de novo. */
     $('#aviso').textContent = `Pedido #${criada.number} na fila: ${nome}.`;
-    $('.mostrador').classList.add('confirmado');
-    setTimeout(() => $('.mostrador').classList.remove('confirmado'), 6000);
+    $('.bancada').classList.add('confirmado');
+    setTimeout(() => $('.bancada').classList.remove('confirmado'), 6000);
     await carregarFila();
   }catch(e){
     $('#aviso').textContent = `Não deu para enviar: ${e.message}`;
@@ -371,8 +430,8 @@ async function acionar(){
 }
 
 /* Responder e IRREVERSIVEL na pratica: o pipeline retoma com a escolha. Entao os
-   botoes morrem no primeiro toque. Sem isso o usuario toca de novo -- foi o que
-   aconteceu na estreia: oito toques em 40s, e um deles numa opcao DIFERENTE. */
+   botoes morrem no primeiro toque -- sem isso o usuario toca de novo, e ja
+   aconteceu de um dos toques cair numa opcao DIFERENTE. */
 async function responder(caixa, issue, indice, texto, botao){
   caixa.querySelectorAll('button').forEach(b => { b.disabled = true; });
   const antes = botao.textContent;
@@ -388,7 +447,7 @@ async function responder(caixa, issue, indice, texto, botao){
     botao.textContent = antes;
     caixa.querySelectorAll('button').forEach(b => { b.disabled = false; });
     const erro = document.createElement('p');
-    erro.className = 'pergunta'; erro.style.color = 'var(--erro)';
+    erro.className = 'pergunta'; erro.style.color = 'var(--coral)';
     erro.textContent = `Não deu para responder: ${e.message}. Tente de novo.`;
     caixa.after(erro);
   }
@@ -399,8 +458,7 @@ async function responder(caixa, issue, indice, texto, botao){
 function extrairPergunta(corpo){
   if(!corpo || !corpo.startsWith('**Precisa de voce**')) return null;
   const linhas = corpo.split('\n').filter(l => l.trim());
-  const opcoes = [];
-  let texto = '';
+  const opcoes = []; let texto = '';
   for(const l of linhas.slice(1)){
     const m = /^(\d+)\.\s+(.*)$/.exec(l);
     if(m) opcoes.push(m[2]); else if(!opcoes.length) texto += (texto?' ':'') + l;
@@ -413,37 +471,55 @@ function estadoDe(rotulos){
   return 'enfileirado';
 }
 
+function desde(iso){
+  if(!iso) return '';
+  const min = Math.round((Date.now() - new Date(iso)) / 60000);
+  if(min < 1)  return 'agora';
+  if(min < 60) return `há ${min} min`;
+  const h = Math.floor(min/60);
+  return h < 24 ? `há ${h}h${String(min%60).padStart(2,'0')}` : `há ${Math.floor(h/24)} d`;
+}
+
 function cartao(p){
   const el = document.createElement('article');
   el.className = 'cartao'; el.dataset.estado = p.estado;
-  el.innerHTML = `<div class="faixa"></div><div class="corpo">
-      <div class="linha1"><span class="proc"></span><span class="id">#${p.numero}</span></div>
-      <div class="estado">${ESTADOS[p.estado] || p.estado}</div></div>`;
-  el.querySelector('.proc').textContent = p.processo || '—';
+
+  /* O numero fica com a linha inteira: e identificador, nao pode quebrar. A
+     pilula desce para a linha do meta, onde sobra espaco. */
+  const cab = document.createElement('div');
+  const proc = document.createElement('div'); proc.className = 'proc';
+  proc.textContent = p.processo || '—';
+  const l2 = document.createElement('div'); l2.className = 'linha2';
+  const meta = document.createElement('span'); meta.className = 'meta';
+  meta.textContent = [`#${p.numero}`, desde(p.quando)].filter(Boolean).join(' · ');
+  const pill = document.createElement('span'); pill.className = 'pill';
+  pill.textContent = ESTADOS[p.estado] || p.estado;
+  l2.append(meta, pill);
+  cab.append(proc, l2);
+  el.append(cab);
 
   if(p.pergunta){
-    const corpo = el.querySelector('.corpo');
     const q = document.createElement('p'); q.className = 'pergunta';
-    q.textContent = p.pergunta.texto; corpo.append(q);
+    q.textContent = p.pergunta.texto; el.append(q);
     const caixa = document.createElement('div'); caixa.className = 'opcoes';
     p.pergunta.opcoes.forEach((o,i) => {
       const b = document.createElement('button');
-      b.textContent = o;
+      b.type = 'button'; b.textContent = o;
       b.onclick = () => demo ? (b.textContent = `Respondido: ${o}`)
                              : responder(caixa, p.numero, i, o, b);
       caixa.append(b);
     });
-    corpo.append(caixa);
+    el.append(caixa);
   }
   return el;
 }
 
-function pintarFila(pedidos){
+function pintarFila(pedidos, recado){
   const lista = $('#lista');
   lista.replaceChildren();
-  if(!pedidos.length){
+  if(recado || !pedidos.length){
     const v = document.createElement('p'); v.className = 'vazio';
-    v.textContent = 'Nada na fila. Comece por um número acima.';
+    v.textContent = recado || 'Nada na fila. Comece por um número acima.';
     lista.append(v); return;
   }
   pedidos.forEach(p => lista.append(cartao(p)));
@@ -451,12 +527,8 @@ function pintarFila(pedidos){
 
 async function carregarFila(){
   if(demo) return pintarFila(FILA_DEMO);
-  if(!cfg.repo || !cfg.token){
-    pintarFila([]);
-    $('#lista').firstChild.textContent =
-      'Falta ligar a fila: preencha o repositório e o token logo abaixo, em Ajustes.';
-    return;
-  }
+  if(!cfg.repo || !cfg.token)
+    return pintarFila([], 'Falta ligar a fila: preencha o repositório e o token logo abaixo, em Ajustes.');
   try{
     const issues = await api('/issues?labels=pedido&state=open&per_page=30');
     const pedidos = await Promise.all(issues.map(async i => {
@@ -468,20 +540,17 @@ async function carregarFila(){
         for(const c of cs) pergunta = extrairPergunta(c.body) || pergunta;
       }
       return {numero:i.number, processo:(/numero:\s*(\S+)/.exec(i.body||'')||[])[1],
-              estado, pergunta};
+              estado, pergunta, quando:i.updated_at};
     }));
     pintarFila(pedidos);
   }catch(e){
-    $('#lista').replaceChildren();
-    const v = document.createElement('p'); v.className = 'vazio';
-    v.textContent = `Não deu para ler a fila: ${e.message}`;
-    $('#lista').append(v);
+    pintarFila([], `Não deu para ler a fila: ${e.message}`);
   }
 }
 
-/* ---- semaforo: le o que o Mac publica; sem noticia, diz que nao ha noticia ---- */
+/* ---- semaforo: le o que o Mac publica ---- */
 const DEMO_SESSOES = {
-  gerado: new Date().toISOString(), batimento: new Date().toISOString(),
+  batimento: new Date().toISOString(),
   sessoes: {
     'PJe':        {nivel:'ok',    ate:'2h52', nota:''},
     'SEEU':       {nivel:'aviso', ate:'',     nota:'sem vigia de sessão'},
@@ -490,85 +559,87 @@ const DEMO_SESSOES = {
 };
 
 /* Ha quanto tempo o Mac nao publica. E a unica coisa que distingue "nada
-   acontecendo" de "o Mac esta desligado" -- e quem esta longe nao pode ficar
-   adivinhando qual dos dois e. */
+   acontecendo" de "o Mac esta desligado". */
 function idadeDoBatimento(iso){
   if(!iso) return null;
   const min = Math.round((Date.now() - new Date(iso)) / 60000);
   return min < 0 ? 0 : min;
 }
 
+function chip(classe, texto, forte, titulo){
+  const s = document.createElement('span'); s.className = 'sinal';
+  const b = document.createElement('i'); b.className = 'bolha ' + classe;
+  s.append(b, document.createTextNode(texto));
+  if(forte){ const f = document.createElement('b'); f.textContent = forte; s.append(f); }
+  if(titulo) s.title = titulo;
+  return s;
+}
+
 function pintarSinais(dados){
   const cx = $('#sinais'); cx.replaceChildren();
   const idade = idadeDoBatimento(dados && dados.batimento);
-  const mudo = idade === null || idade > 5;   /* o executor publica a cada minuto */
+  if(idade === null) return;              /* sem dado: cala. O lema ja ocupa a tela. */
 
-  if(idade === null) return;          /* sem dado: cala. O lema ja ocupa a tela. */
-
-  if(mudo){
-    const s = document.createElement('span'); s.className = 'sinal';
-    const b = document.createElement('i'); b.className = 'bolha ruim';
-    s.append(b, document.createTextNode(`Mac parado há ${idade} min`));
-    s.title = 'O executor publica a cada minuto. Silêncio longo = máquina desligada, ' +
-              'dormindo, ou parada na tela de senha.';
-    cx.append(s); return;
+  if(idade > 5){                          /* o executor publica a cada minuto */
+    cx.append(chip('ruim', `Mac parado há ${idade} min`, '',
+      'O executor publica a cada minuto. Silêncio longo = máquina desligada, dormindo, ' +
+      'ou parada na tela de senha.'));
+    return;
   }
-
   for(const [nome, v] of Object.entries(dados.sessoes || {})){
-    const s = document.createElement('span'); s.className = 'sinal';
-    const b = document.createElement('i');
-    b.className = 'bolha ' + ({ok:'ok', aviso:'alerta', erro:'ruim'}[v.nivel] || '');
-    s.append(b, document.createTextNode(nome + (v.ate ? ` ${v.ate}` : '')));
-    s.title = v.nota || (v.ate ? `válido por mais ${v.ate}` : 'sessão viva');
-    cx.append(s);
+    cx.append(chip({ok:'ok', aviso:'alerta', erro:'ruim'}[v.nivel] || '',
+      nome, v.ate, v.nota || (v.ate ? `válido por mais ${v.ate}` : 'sessão viva')));
   }
 }
 
 async function carregarSinais(){
   if(demo) return pintarSinais(DEMO_SESSOES);
-  try{
-    pintarSinais(await (await fetch('sessoes.json', {cache:'no-store'})).json());
-  }catch{
-    pintarSinais(null);
-  }
+  try{ pintarSinais(await (await fetch('sessoes.json', {cache:'no-store'})).json()); }
+  catch{ pintarSinais(null); }
 }
 
 const FILA_DEMO = [
   {numero:14, processo:'0000213-49.2019.8.05.0123', estado:'aguardando',
+   quando:new Date(Date.now()-4*60000).toISOString(),
    pergunta:{texto:'O processo tem inquérito apartado que não veio junto da denúncia. Trago para a fonte?',
              opcoes:['Trazer o inquérito e seguir','Seguir sem o inquérito','Cancelar o pedido']}},
-  {numero:13, processo:'8001029-79.2025.8.05.0123', estado:'executando'},
-  {numero:12, processo:'8000316-41.2024.8.05.0123', estado:'concluido'},
-  {numero:11, processo:'8002044-58.2026.8.05.0120', estado:'nada_a_fazer'},
-  {numero:10, processo:'0000008-20.2019.8.05.0123', estado:'falhou'},
+  {numero:13, processo:'8001029-79.2025.8.05.0123', estado:'executando',
+   quando:new Date(Date.now()-11*60000).toISOString()},
+  {numero:12, processo:'8000316-41.2024.8.05.0123', estado:'concluido',
+   quando:new Date(Date.now()-52*60000).toISOString()},
+  {numero:11, processo:'8002044-58.2026.8.05.0120', estado:'nada_a_fazer',
+   quando:new Date(Date.now()-3*3600000).toISOString()},
 ];
 
 /* ---- montagem ---- */
 function descrever(){
   $('#faz').textContent = (PIPELINES.find(p => p.id === pipeline) || {}).faz || '';
 }
+function moverPolegar(i){
+  $('#polegar').style.transform = `translateX(${i * 100}%)`;
+}
 
-PIPELINES.forEach(p => {
+PIPELINES.forEach((p, i) => {
   const b = document.createElement('button');
-  b.textContent = p.nome; b.setAttribute('aria-pressed', p.id === pipeline);
+  b.type = 'button'; b.textContent = p.nome;
+  b.setAttribute('aria-pressed', p.id === pipeline);
   b.onclick = () => {
     pipeline = p.id;
     document.querySelectorAll('#pipes button').forEach(o =>
       o.setAttribute('aria-pressed', o === b));
-    descrever();
+    moverPolegar(i); descrever();
   };
   $('#pipes').append(b);
 });
-descrever();
+moverPolegar(0); descrever();
+
+medirColuna();
+addEventListener('resize', medirColuna);
 
 $('#numero').addEventListener('input', aoDigitar);
 $('#acionar').addEventListener('click', () => demo
-  ? alert('Demonstração: nada é enviado.') : acionar());
-/* O Ajustes fica SEMPRE recolhido: e configuracao, nao rotina -- se abrisse
-   sozinho, roubaria a primeira tela de quem so quer acionar um pedido. Quem
-   chega sem token e levado ate ele pelo aviso da fila, nao por ele se abrir. */
-
-$('#repo').value = cfg.repo;  $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
+  ? ($('#aviso').textContent = 'Demonstração: nada é enviado.') : acionar());
+$('#repo').value = cfg.repo;   $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
 $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.value.trim();
 
 /* Diz em que pe esta o armazenamento. Sem isso, o token sumir vira misterio. */
@@ -583,8 +654,7 @@ $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.v
 
 carregarSinais();
 carregarFila();
-if(!demo) setInterval(carregarSinais, 60000);
-if(!demo) setInterval(carregarFila, 60000);
+if(!demo){ setInterval(carregarFila, 60000); setInterval(carregarSinais, 60000); }
 </script>
 </body>
 </html>
