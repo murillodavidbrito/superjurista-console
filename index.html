@@ -228,16 +228,12 @@ function formatar(bruto){
    escondia que ele vai ate a minuta. Por isso cada um leva uma linha que diz o
    que vai acontecer, mostrada sob os botoes conforme a escolha. */
 const PIPELINES = [
-  {id:'ato',       nome:'Minutar o ato',
-   faz:'Usa os autos que já estão no computador. Se não estiverem, baixa antes.'},
-  {id:'audiencia', nome:'Preparar audiência',
-   faz:'Relatório de prontidão para presidir a audiência. Não produz minuta.'},
-  {id:'pje',       nome:'Buscar no PJE',
-   faz:'Vai ao PJE conferir se há peças novas e então minuta o ato.'},
-  {id:'seeu',      nome:'Execução penal',
+  {id:'ato',       nome:'Minutar PJE',
+   faz:'Minuta o ato a partir dos autos. Se não estiverem no computador, baixa do PJE antes.'},
+  {id:'audiencia', nome:'Relatório AIJ',
+   faz:'Relatório de prontidão para presidir a audiência de instrução. Não produz minuta.'},
+  {id:'seeu',      nome:'Minutar SEEU',
    faz:'Exporta os autos do SEEU (execução penal) e minuta o ato.'},
-  {id:'entregar',  nome:'Entregar ao gabinete',
-   faz:'Publica os autos e a minuta na pasta do OneDrive. Não redige nada.'},
 ];
 const ESTADOS = {
   enfileirado:'na fila', executando:'trabalhando', aguardando:'precisa de você',
