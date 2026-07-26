@@ -133,6 +133,8 @@ details input{
   border-radius:.4rem;padding:.6rem .7rem;color:var(--texto);font:inherit;font-size:.85rem
 }
 details p{font-size:.76rem;color:var(--fraco);margin-top:.6rem;line-height:1.5}
+details p.cofre{color:var(--suave)}
+details p.cofre.alerta{color:var(--atencao)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -246,11 +248,36 @@ function medirColuna(){
 }
 medirColuna();
 addEventListener('resize', medirColuna);
+/* Onde guardar o token. Nem todo navegador de celular deixa o localStorage
+   sobreviver: navegacao privada, "limpar ao sair" e a limpeza automatica do iOS
+   apagam. Entao a pagina TESTA o que tem e diz ao usuario o que conseguiu, em vez
+   de perder a configuracao em silencio e deixar ele achando que digitou errado. */
+const cofre = (() => {
+  for (const [nome, alvo] of [['permanente', 'localStorage'], ['sessao', 'sessionStorage']]) {
+    try {
+      const s = window[alvo];
+      const k = '__sj_teste__';
+      s.setItem(k, '1'); const ok = s.getItem(k) === '1'; s.removeItem(k);
+      if (ok) return {nome, ler: k => s.getItem(k) || '', gravar: (k, v) => s.setItem(k, v)};
+    } catch { /* bloqueado: tenta o proximo */ }
+  }
+  const mem = {};
+  return {nome: 'memoria', ler: k => mem[k] || '', gravar: (k, v) => { mem[k] = v; }};
+})();
+
 const cfg = {
-  get repo(){ return localStorage.getItem('sj.repo') || ''; },
-  set repo(v){ localStorage.setItem('sj.repo', v); },
-  get token(){ return localStorage.getItem('sj.token') || ''; },
-  set token(v){ localStorage.setItem('sj.token', v); },
+  get repo(){ return cofre.ler('sj.repo'); },
+  set repo(v){ cofre.gravar('sj.repo', v); },
+  get token(){ return cofre.ler('sj.token'); },
+  set token(v){ cofre.gravar('sj.token', v); },
+};
+
+const AVISO_COFRE = {
+  permanente: '',
+  sessao: 'Este navegador não guarda dados entre visitas — provavelmente aba privada. ' +
+          'O token vale só enquanto esta aba estiver aberta.',
+  memoria: 'Este navegador está bloqueando o armazenamento. O token some ao recarregar. ' +
+           'Saia da navegação privada, ou adicione esta página à tela de início.',
 };
 let pipeline = 'ato';
 const demo = new URLSearchParams(location.search).has('demo');
@@ -446,6 +473,16 @@ if(!cfg.repo || !cfg.token) document.querySelector('details').open = true;
 
 $('#repo').value = cfg.repo;  $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
 $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.value.trim();
+
+/* Diz em que pe esta o armazenamento. Sem isso, o token sumir vira misterio. */
+{
+  const d = document.createElement('p');
+  d.className = 'cofre';
+  d.textContent = AVISO_COFRE[cofre.nome] ||
+    (cfg.token ? 'Token guardado neste aparelho.' : 'O token ficará guardado neste aparelho.');
+  if (cofre.nome !== 'permanente') d.classList.add('alerta');
+  document.querySelector('details').append(d);
+}
 
 carregarSinais();
 carregarFila();
