@@ -228,13 +228,12 @@ function formatar(bruto){
    escondia que ele vai ate a minuta. Por isso cada um leva uma linha que diz o
    que vai acontecer, mostrada sob os botoes conforme a escolha. */
 const PIPELINES = [
-  {id:'pje',       nome:'Minutar PJE',
-   faz:'Confere no PJE se há peças novas, baixa o que faltar e minuta o ato. ' +
-       'Precisa da sessão do PJE viva.'},
+  {id:'pje',       nome:'Minutar PJe',
+   faz:'Acessa os autos no PJe, analisa o processo e elabora a minuta da peça cabível.'},
   {id:'seeu',      nome:'Minutar SEEU',
-   faz:'Exporta os autos do SEEU (execução penal) e minuta o ato.'},
+   faz:'Acessa os autos no SEEU, analisa o processo e elabora a minuta da peça cabível.'},
   {id:'audiencia', nome:'Relatório AIJ',
-   faz:'Relatório de prontidão para presidir a audiência de instrução. Não produz minuta.'},
+   faz:'Acessa os autos, analisa o processo e elabora relatório completo para a audiência.'},
 ];
 const ESTADOS = {
   enfileirado:'na fila', executando:'trabalhando', aguardando:'precisa de você',
