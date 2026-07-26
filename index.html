@@ -77,6 +77,7 @@ h1 span{color:var(--fraco);font-weight:400}
 .conferido .escala .dv::before{background:var(--leitura)}
 .aviso{font-size:.76rem;color:var(--atencao);margin-top:.85rem;min-height:1.15rem}
 .conferido .aviso{color:var(--leitura)}
+.confirmado .aviso{color:var(--leitura)}
 
 /* ---- seletor de pipeline ---- */
 .pipes{display:flex;flex-wrap:wrap;gap:.4rem;margin:1.1rem 0 1.3rem}
@@ -291,6 +292,7 @@ function aoDigitar(){
   $('#aviso').textContent = ok ? 'Número confere.'
     : cheio ? 'O dígito verificador não bate — confira antes de acionar.' : '';
   $('#acionar').disabled = !ok;
+  if(insistindo && insistindo !== n) insistindo = null;
 }
 
 /* ---- GitHub ---- */
@@ -304,22 +306,55 @@ async function api(caminho, opcoes = {}){
   return r.json();
 }
 
+/* Ja existe pedido aberto para este processo? Nao BLOQUEIA -- rodar o ato e
+   depois entregar e legitimo -- mas exige um segundo toque, para o acionar duas
+   vezes ser escolha e nao duvida. */
+let insistindo = null;
+
+async function jaNaFila(numero){
+  try{
+    const issues = await api('/issues?labels=pedido&state=open&per_page=30');
+    return issues.find(i => (i.body || '').includes(numero));
+  }catch{ return null; }
+}
+
 async function acionar(){
   const numero = $('#numero').value;
+  const nome = (PIPELINES.find(p => p.id === pipeline) || {}).nome || pipeline;
   const botao = $('#acionar');
+
+  if(insistindo !== numero){
+    const aberto = await jaNaFila(numero);
+    if(aberto){
+      insistindo = numero;
+      $('#aviso').textContent =
+        `Já existe o pedido #${aberto.number} para este processo, em andamento. ` +
+        `Toque de novo para acionar "${nome}" assim mesmo.`;
+      return;
+    }
+  }
+  insistindo = null;
+
   botao.disabled = true; botao.textContent = 'Enviando…';
   try{
-    await api('/issues', {method:'POST', body: JSON.stringify({
+    const criada = await api('/issues', {method:'POST', body: JSON.stringify({
       title: `${pipeline} · ${numero}`,
       body: `pipeline: ${pipeline}\nnumero: ${numero}\n`,
       labels: ['pedido','enfileirado'],
     })});
     $('#numero').value = ''; aoDigitar();
+    /* A confirmacao fica AQUI, colada no campo. O cartao novo aparece na fila,
+       mas num celular a fila esta fora da tela -- e quem nao ve confirmacao
+       aciona de novo, que foi exatamente o que aconteceu. */
+    $('#aviso').textContent = `Pedido #${criada.number} na fila: ${nome}.`;
+    $('.mostrador').classList.add('confirmado');
+    setTimeout(() => $('.mostrador').classList.remove('confirmado'), 6000);
     await carregarFila();
   }catch(e){
     $('#aviso').textContent = `Não deu para enviar: ${e.message}`;
   }finally{
-    botao.textContent = 'Acionar'; aoDigitar();
+    botao.textContent = 'Acionar';
+    botao.disabled = !numeroConfere($('#numero').value);
   }
 }
 
