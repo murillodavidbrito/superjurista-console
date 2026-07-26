@@ -1,0 +1,21 @@
+{
+ "gerado": "2026-07-26T20:55:25.545219+00:00",
+ "sessoes": {
+  "PJe": {
+   "nivel": "ok",
+   "ate": "1h37",
+   "nota": ""
+  },
+  "SEEU": {
+   "nivel": "aviso",
+   "ate": "",
+   "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
+  },
+  "PJe Mídias": {
+   "nivel": "ok",
+   "ate": "",
+   "nota": ""
+  }
+ },
+ "batimento": "2026-07-26T20:55:25.545219+00:00"
+}
