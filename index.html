@@ -171,8 +171,8 @@ details p{font-size:.76rem;color:var(--fraco);margin-top:.6rem;line-height:1.5}
 
 <details>
   <summary>Ajustes</summary>
-  <input id="repo" placeholder="dono/repositorio-da-fila" autocapitalize="off" spellcheck="false">
-  <input id="token" type="password" placeholder="token do GitHub (fine-grained, só Issues)" autocomplete="off">
+  <input id="repo" placeholder="murillodavidbrito/superjurista-pedidos" autocapitalize="off" spellcheck="false">
+  <input id="token" type="password" placeholder="cole aqui o token (começa com github_pat_)" autocomplete="off">
   <p>O token fica só neste aparelho. Dê a ele escopo <em>Issues: read &amp; write</em> num
      repositório e nada mais — em especial, nada de <em>Contents</em>.</p>
 </details>
@@ -360,8 +360,10 @@ function pintarFila(pedidos){
 async function carregarFila(){
   if(demo) return pintarFila(FILA_DEMO);
   if(!cfg.repo || !cfg.token){
-    return pintarFila.call(null, []) , ($('#lista').firstChild.textContent =
-      'Informe o repositório e o token em Ajustes.');
+    pintarFila([]);
+    $('#lista').firstChild.textContent =
+      'Falta ligar a fila: preencha o repositório e o token logo abaixo, em Ajustes.';
+    return;
   }
   try{
     const issues = await api('/issues?labels=pedido&state=open&per_page=30');
@@ -438,6 +440,10 @@ PIPELINES.forEach(p => {
 $('#numero').addEventListener('input', aoDigitar);
 $('#acionar').addEventListener('click', () => demo
   ? alert('Demonstração: nada é enviado.') : acionar());
+/* Primeira visita: o Ajustes abre sozinho. Esconder o unico passo que falta
+   atras de um toque no rodape e esconder o caminho de quem esta chegando. */
+if(!cfg.repo || !cfg.token) document.querySelector('details').open = true;
+
 $('#repo').value = cfg.repo;  $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
 $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.value.trim();
 
