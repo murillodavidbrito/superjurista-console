@@ -89,6 +89,7 @@ h1 span{color:var(--fraco);font-weight:400}
 .pipes button[aria-pressed=true]{border-color:var(--leitura);color:var(--texto)}
 .pipes button:focus-visible{outline:2px solid var(--leitura);outline-offset:2px}
 
+.faz{font-size:.78rem;color:var(--suave);line-height:1.45;margin:-.5rem 0 1.1rem}
 .acionar{
   width:100%;background:var(--leitura);color:var(--breu);border:0;border-radius:.5rem;
   padding:.9rem;font:inherit;font-weight:640;font-size:1rem;cursor:pointer
@@ -166,6 +167,8 @@ details p.cofre.alerta{color:var(--atencao)}
   <span class="rotulo" style="margin-top:1.15rem">O que fazer</span>
   <div class="pipes" id="pipes"></div>
 
+  <p class="faz" id="faz"></p>
+
   <button class="acionar" id="acionar" disabled>Acionar</button>
 </section>
 
@@ -221,12 +224,20 @@ function formatar(bruto){
   return s;
 }
 
+/* A etiqueta curta nao cabe a diferenca entre os pipelines -- e "Baixar do PJE"
+   escondia que ele vai ate a minuta. Por isso cada um leva uma linha que diz o
+   que vai acontecer, mostrada sob os botoes conforme a escolha. */
 const PIPELINES = [
-  {id:'ato',       nome:'Minutar o ato'},
-  {id:'audiencia', nome:'Preparar audiência'},
-  {id:'pje',       nome:'Baixar do PJE'},
-  {id:'seeu',      nome:'Baixar do SEEU'},
-  {id:'entregar',  nome:'Entregar minutas'},
+  {id:'ato',       nome:'Minutar o ato',
+   faz:'Usa os autos que já estão no computador. Se não estiverem, baixa antes.'},
+  {id:'audiencia', nome:'Preparar audiência',
+   faz:'Relatório de prontidão para presidir a audiência. Não produz minuta.'},
+  {id:'pje',       nome:'Buscar no PJE',
+   faz:'Vai ao PJE conferir se há peças novas e então minuta o ato.'},
+  {id:'seeu',      nome:'Execução penal',
+   faz:'Exporta os autos do SEEU (execução penal) e minuta o ato.'},
+  {id:'entregar',  nome:'Entregar ao gabinete',
+   faz:'Publica os autos e a minuta na pasta do OneDrive. Não redige nada.'},
 ];
 const ESTADOS = {
   enfileirado:'na fila', executando:'trabalhando', aguardando:'precisa de você',
@@ -508,6 +519,10 @@ const FILA_DEMO = [
 ];
 
 /* ---- montagem ---- */
+function descrever(){
+  $('#faz').textContent = (PIPELINES.find(p => p.id === pipeline) || {}).faz || '';
+}
+
 PIPELINES.forEach(p => {
   const b = document.createElement('button');
   b.textContent = p.nome; b.setAttribute('aria-pressed', p.id === pipeline);
@@ -515,9 +530,11 @@ PIPELINES.forEach(p => {
     pipeline = p.id;
     document.querySelectorAll('#pipes button').forEach(o =>
       o.setAttribute('aria-pressed', o === b));
+    descrever();
   };
   $('#pipes').append(b);
 });
+descrever();
 
 $('#numero').addEventListener('input', aoDigitar);
 $('#acionar').addEventListener('click', () => demo
