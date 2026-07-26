@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1119">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Console · SuperJurista</title>
+<style>
+:root{
+  --breu:#0B1119; --painel:#141D28; --alto:#1B2734; --linha:#25313F;
+  --texto:#DDE5EE; --suave:#7C8B9E; --fraco:#4E5C6E;
+  --leitura:#7FE3C4;      /* o verde do mostrador: numero conferido */
+  --atencao:#F5B544;      /* precisa de voce */
+  --trabalho:#5AA9E6;     /* trabalhando */
+  --erro:#E86A5C;         /* falhou, recusado */
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--breu); color:var(--texto); font-family:var(--ui);
+  font-size:16px; line-height:1.5; min-height:100vh;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.wrap{max-width:34rem;margin:0 auto;padding:1.25rem 1.1rem 4rem}
+
+/* ---- cabecalho e semaforo ---- */
+header{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:1.75rem}
+h1{font-size:.8rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+h1 span{color:var(--fraco);font-weight:400}
+.sinais{display:flex;gap:.9rem;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--suave)}
+.sinal{display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+.bolha{width:.45rem;height:.45rem;border-radius:50%;background:var(--fraco);flex:none}
+.bolha.ok{background:var(--leitura)} .bolha.alerta{background:var(--atencao)} .bolha.ruim{background:var(--erro)}
+
+/* ---- o mostrador: assinatura da pagina ---- */
+.mostrador{background:var(--painel);border:1px solid var(--linha);border-radius:.7rem;padding:1.3rem 1.2rem 1.15rem}
+.rotulo{font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:var(--suave);display:block;margin-bottom:.55rem}
+
+.leitor{position:relative;margin-bottom:.2rem}
+#numero{
+  width:100%;background:transparent;border:0;outline:0;color:var(--texto);
+  font-family:var(--mono);letter-spacing:.02em;padding:.25rem 0 .5rem;
+  font-size:clamp(.95rem, calc((100vw - 4.6rem) / 16), 1.32rem);
+  caret-color:var(--leitura);
+}
+#numero::placeholder{color:var(--fraco)}
+.trilho{height:2px;background:var(--linha);position:relative;overflow:hidden}
+.trilho::after{
+  content:"";position:absolute;inset:0;background:var(--leitura);
+  transform:scaleX(0);transform-origin:left;transition:transform .18s ease
+}
+.conferido .trilho::after{transform:scaleX(1)}
+.conferido #numero{color:var(--leitura)}
+
+/* A escala nomeia os seis campos do numero CNJ, cada rotulo ancorado na COLUNA
+   exata do seu campo -- da para fazer porque o mostrador e monoespacado e o
+   formato e fixo. E regua, nao enfeite: ensina o que se digita enquanto confere.
+   As colunas sao as do formato NNNNNNN-DD.AAAA.J.TT.OOOO. */
+.escala{position:relative;height:.85rem;margin-top:.45rem}
+.escala b{
+  position:absolute;top:0;font-family:var(--ui);font-size:.55rem;font-weight:400;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--fraco);
+  transition:color .18s ease;white-space:nowrap
+}
+.escala b::before{content:"";position:absolute;left:0;top:-.34rem;width:1px;height:.22rem;background:var(--linha)}
+/* --col e a largura de UM caractere do mostrador, medida em JS. Nao da para usar
+   `ch` aqui: numa filha, `ch` resolve contra a fonte DA FILHA (0.55rem), nao a do
+   numero -- e os rotulos se empilhavam. */
+.escala .seq{left:0}                          .escala .dv {left:calc(8  * var(--col))}
+.escala .ano{left:calc(11 * var(--col))}      .escala .jus{left:calc(16 * var(--col))}
+.escala .tri{left:calc(18 * var(--col))}      .escala .uni{left:calc(21 * var(--col))}
+.conferido .escala .dv{color:var(--leitura)}
+.conferido .escala .dv::before{background:var(--leitura)}
+.aviso{font-size:.76rem;color:var(--atencao);margin-top:.85rem;min-height:1.15rem}
+.conferido .aviso{color:var(--leitura)}
+
+/* ---- seletor de pipeline ---- */
+.pipes{display:flex;flex-wrap:wrap;gap:.4rem;margin:1.1rem 0 1.3rem}
+.pipes button{
+  background:var(--alto);border:1px solid var(--linha);color:var(--suave);
+  border-radius:2rem;padding:.5rem .85rem;font:inherit;font-size:.82rem;cursor:pointer;
+  transition:border-color .15s,color .15s
+}
+.pipes button[aria-pressed=true]{border-color:var(--leitura);color:var(--texto)}
+.pipes button:focus-visible{outline:2px solid var(--leitura);outline-offset:2px}
+
+.acionar{
+  width:100%;background:var(--leitura);color:var(--breu);border:0;border-radius:.5rem;
+  padding:.9rem;font:inherit;font-weight:640;font-size:1rem;cursor:pointer
+}
+.acionar:disabled{background:var(--alto);color:var(--fraco);cursor:not-allowed}
+.acionar:focus-visible{outline:2px solid var(--texto);outline-offset:2px}
+
+/* ---- a fila ---- */
+.fila{margin-top:2.5rem}
+.fila > .rotulo{margin-bottom:.9rem}
+.cartao{
+  display:flex;gap:.85rem;background:var(--painel);border:1px solid var(--linha);
+  border-radius:.55rem;padding:.9rem 1rem;margin-bottom:.6rem
+}
+.faixa{width:3px;border-radius:2px;background:var(--fraco);flex:none}
+.cartao[data-estado=executando] .faixa{background:var(--trabalho);animation:pulso 2.2s ease-in-out infinite}
+.cartao[data-estado=aguardando] .faixa{background:var(--atencao)}
+.cartao[data-estado=concluido] .faixa{background:var(--leitura)}
+.cartao[data-estado=falhou] .faixa,.cartao[data-estado=recusado] .faixa{background:var(--erro)}
+@keyframes pulso{0%,100%{opacity:1}50%{opacity:.3}}
+.corpo{flex:1;min-width:0}
+.linha1{display:flex;justify-content:space-between;gap:.75rem;align-items:baseline}
+.proc{font-family:var(--mono);font-size:.86rem;color:var(--texto);overflow-wrap:anywhere}
+.id{font-size:.7rem;color:var(--fraco);font-family:var(--mono);flex:none}
+.estado{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);margin-top:.3rem}
+.cartao[data-estado=aguardando] .estado{color:var(--atencao)}
+.cartao[data-estado=falhou] .estado,.cartao[data-estado=recusado] .estado{color:var(--erro)}
+.pergunta{font-size:.86rem;color:var(--texto);margin:.7rem 0 .6rem;line-height:1.45}
+.opcoes{display:flex;flex-direction:column;gap:.4rem}
+.opcoes button{
+  background:transparent;border:1px solid var(--linha);color:var(--texto);text-align:left;
+  border-radius:.4rem;padding:.6rem .7rem;font:inherit;font-size:.82rem;cursor:pointer;line-height:1.35
+}
+.opcoes button:hover{border-color:var(--atencao)}
+.opcoes button:focus-visible{outline:2px solid var(--atencao);outline-offset:2px}
+.vazio{color:var(--fraco);font-size:.88rem;padding:.4rem 0}
+
+/* ---- ajustes ---- */
+details{margin-top:2.5rem;border-top:1px solid var(--linha);padding-top:1rem}
+summary{font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:var(--suave);cursor:pointer}
+details input{
+  width:100%;margin-top:.8rem;background:var(--painel);border:1px solid var(--linha);
+  border-radius:.4rem;padding:.6rem .7rem;color:var(--texto);font:inherit;font-size:.85rem
+}
+details p{font-size:.76rem;color:var(--fraco);margin-top:.6rem;line-height:1.5}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SuperJurista <span>console</span></h1>
+  <div class="sinais" id="sinais"></div>
+</header>
+
+<section class="mostrador">
+  <span class="rotulo">Número do processo</span>
+
+  <div class="leitor" id="leitor">
+    <input id="numero" inputmode="numeric" autocomplete="off" spellcheck="false"
+           placeholder="0000000-00.0000.0.00.0000" aria-describedby="aviso">
+    <div class="trilho"></div>
+    <div class="escala" aria-hidden="true">
+      <b class="seq">sequencial</b><b class="dv">dv</b><b class="ano">ano</b><b
+       class="jus">j</b><b class="tri">tr</b><b class="uni">unid</b>
+    </div>
+  </div>
+  <p class="aviso" id="aviso" role="status"></p>
+
+  <span class="rotulo" style="margin-top:1.15rem">O que fazer</span>
+  <div class="pipes" id="pipes"></div>
+
+  <button class="acionar" id="acionar" disabled>Acionar</button>
+</section>
+
+<section class="fila">
+  <span class="rotulo">Na fila</span>
+  <div id="lista"><p class="vazio">Carregando…</p></div>
+</section>
+
+<details>
+  <summary>Ajustes</summary>
+  <input id="repo" placeholder="dono/repositorio-da-fila" autocapitalize="off" spellcheck="false">
+  <input id="token" type="password" placeholder="token do GitHub (fine-grained, só Issues)" autocomplete="off">
+  <p>O token fica só neste aparelho. Dê a ele escopo <em>Issues: read &amp; write</em> num
+     repositório e nada mais — em especial, nada de <em>Contents</em>.</p>
+</details>
+
+</div>
+
+<script>
+'use strict';
+
+/* ------------------------------------------------------------------ *
+ * O digito verificador do numero CNJ (modulo 97, ISO 7064).
+ * Mesma formula do scripts/lib/pedido.py -- conferida contra os cinco
+ * processos que o resolver_processo resolveu ao vivo no PJE.
+ * Aqui e conveniencia: quem decide de verdade e o guarda, no Mac.
+ * ------------------------------------------------------------------ */
+const RE_CNJ = /^(\d{7})-(\d{2})\.(\d{4})\.(\d)\.(\d{2})\.(\d{4})$/;
+
+function digitoVerificador(n){
+  const m = RE_CNJ.exec(n);
+  if(!m) return null;
+  const [,seq,,ano,seg,trib,org] = m;
+  let r = 0;                                   // mod 97 digito a digito: o numero
+  for(const c of seq+ano+seg+trib+org+'00')    // inteiro estoura o Number do JS
+    r = (r*10 + (+c)) % 97;
+  return 98 - r;
+}
+function numeroConfere(n){
+  const m = RE_CNJ.exec(n);
+  return !!m && +m[2] === digitoVerificador(n);
+}
+
+/* Mascara: so digitos entram; a pontuacao aparece sozinha. */
+function formatar(bruto){
+  const d = bruto.replace(/\D/g,'').slice(0,20);
+  let s = d.slice(0,7);
+  if(d.length>7)  s += '-' + d.slice(7,9);
+  if(d.length>9)  s += '.' + d.slice(9,13);
+  if(d.length>13) s += '.' + d.slice(13,14);
+  if(d.length>14) s += '.' + d.slice(14,16);
+  if(d.length>16) s += '.' + d.slice(16,20);
+  return s;
+}
+
+const PIPELINES = [
+  {id:'ato',       nome:'Minutar o ato'},
+  {id:'audiencia', nome:'Preparar audiência'},
+  {id:'pje',       nome:'Baixar do PJE'},
+  {id:'seeu',      nome:'Baixar do SEEU'},
+  {id:'entregar',  nome:'Entregar minutas'},
+];
+const ESTADOS = {
+  enfileirado:'na fila', executando:'trabalhando', aguardando:'precisa de você',
+  concluido:'pronto', nada_a_fazer:'nada a fazer', falhou:'falhou', recusado:'recusado',
+};
+
+const $ = s => document.querySelector(s);
+
+/* Mede a largura de um caractere do mostrador e publica como --col, para a regua
+   ancorar cada rotulo na coluna exata do seu campo. Medir e melhor que supor 0.6em:
+   sobrevive a troca de fonte e ao ajuste de tamanho de texto do sistema. */
+function medirColuna(){
+  const alvo = getComputedStyle($('#numero'));
+  const p = document.createElement('span');
+  p.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
+  p.style.font = alvo.font || `${alvo.fontSize} ${alvo.fontFamily}`;
+  p.style.letterSpacing = alvo.letterSpacing;
+  p.textContent = '0'.repeat(20);
+  document.body.append(p);
+  document.documentElement.style.setProperty('--col', p.getBoundingClientRect().width / 20 + 'px');
+  p.remove();
+}
+medirColuna();
+addEventListener('resize', medirColuna);
+const cfg = {
+  get repo(){ return localStorage.getItem('sj.repo') || ''; },
+  set repo(v){ localStorage.setItem('sj.repo', v); },
+  get token(){ return localStorage.getItem('sj.token') || ''; },
+  set token(v){ localStorage.setItem('sj.token', v); },
+};
+let pipeline = 'ato';
+const demo = new URLSearchParams(location.search).has('demo');
+
+/* ---- o mostrador ---- */
+function aoDigitar(){
+  const el = $('#numero');
+  el.value = formatar(el.value);
+  const n = el.value, cheio = RE_CNJ.test(n), ok = numeroConfere(n);
+  $('.mostrador').classList.toggle('conferido', ok);
+  $('#aviso').textContent = ok ? 'Número confere.'
+    : cheio ? 'O dígito verificador não bate — confira antes de acionar.' : '';
+  $('#acionar').disabled = !ok;
+}
+
+/* ---- GitHub ---- */
+async function api(caminho, opcoes = {}){
+  const r = await fetch(`https://api.github.com/repos/${cfg.repo}${caminho}`, {
+    ...opcoes,
+    headers:{Authorization:`Bearer ${cfg.token}`, Accept:'application/vnd.github+json',
+             'Content-Type':'application/json', ...(opcoes.headers||{})},
+  });
+  if(!r.ok) throw new Error(`GitHub respondeu ${r.status}`);
+  return r.json();
+}
+
+async function acionar(){
+  const numero = $('#numero').value;
+  const botao = $('#acionar');
+  botao.disabled = true; botao.textContent = 'Enviando…';
+  try{
+    await api('/issues', {method:'POST', body: JSON.stringify({
+      title: `${pipeline} · ${numero}`,
+      body: `pipeline: ${pipeline}\nnumero: ${numero}\n`,
+      labels: ['pedido','enfileirado'],
+    })});
+    $('#numero').value = ''; aoDigitar();
+    await carregarFila();
+  }catch(e){
+    $('#aviso').textContent = `Não deu para enviar: ${e.message}`;
+  }finally{
+    botao.textContent = 'Acionar'; aoDigitar();
+  }
+}
+
+async function responder(issue, indice, texto){
+  await api(`/issues/${issue}/comments`, {method:'POST', body: JSON.stringify({
+    body: `<!--superjurista:resposta:${indice}-->\nEscolhi: **${texto}**`,
+  })});
+  await carregarFila();
+}
+
+/* A pergunta vem no comentario que o executor publicou. Ler dali evita inventar
+   um segundo canal: o que a pagina mostra e exatamente o que o Mac disse. */
+function extrairPergunta(corpo){
+  if(!corpo || !corpo.startsWith('**Precisa de voce**')) return null;
+  const linhas = corpo.split('\n').filter(l => l.trim());
+  const opcoes = [];
+  let texto = '';
+  for(const l of linhas.slice(1)){
+    const m = /^(\d+)\.\s+(.*)$/.exec(l);
+    if(m) opcoes.push(m[2]); else if(!opcoes.length) texto += (texto?' ':'') + l;
+  }
+  return opcoes.length ? {texto, opcoes} : null;
+}
+
+function estadoDe(rotulos){
+  for(const e of Object.keys(ESTADOS)) if(rotulos.includes(e)) return e;
+  return 'enfileirado';
+}
+
+function cartao(p){
+  const el = document.createElement('article');
+  el.className = 'cartao'; el.dataset.estado = p.estado;
+  el.innerHTML = `<div class="faixa"></div><div class="corpo">
+      <div class="linha1"><span class="proc"></span><span class="id">#${p.numero}</span></div>
+      <div class="estado">${ESTADOS[p.estado] || p.estado}</div></div>`;
+  el.querySelector('.proc').textContent = p.processo || '—';
+
+  if(p.pergunta){
+    const corpo = el.querySelector('.corpo');
+    const q = document.createElement('p'); q.className = 'pergunta';
+    q.textContent = p.pergunta.texto; corpo.append(q);
+    const caixa = document.createElement('div'); caixa.className = 'opcoes';
+    p.pergunta.opcoes.forEach((o,i) => {
+      const b = document.createElement('button');
+      b.textContent = o;
+      b.onclick = () => demo ? alert('Demonstração: nada é enviado.') : responder(p.numero,i,o);
+      caixa.append(b);
+    });
+    corpo.append(caixa);
+  }
+  return el;
+}
+
+function pintarFila(pedidos){
+  const lista = $('#lista');
+  lista.replaceChildren();
+  if(!pedidos.length){
+    const v = document.createElement('p'); v.className = 'vazio';
+    v.textContent = 'Nada na fila. Acione um pedido acima.';
+    lista.append(v); return;
+  }
+  pedidos.forEach(p => lista.append(cartao(p)));
+}
+
+async function carregarFila(){
+  if(demo) return pintarFila(FILA_DEMO);
+  if(!cfg.repo || !cfg.token){
+    return pintarFila.call(null, []) , ($('#lista').firstChild.textContent =
+      'Informe o repositório e o token em Ajustes.');
+  }
+  try{
+    const issues = await api('/issues?labels=pedido&state=open&per_page=30');
+    const pedidos = await Promise.all(issues.map(async i => {
+      const rotulos = i.labels.map(l => l.name);
+      const estado = estadoDe(rotulos);
+      let pergunta = null;
+      if(estado === 'aguardando'){
+        const cs = await api(`/issues/${i.number}/comments?per_page=100`);
+        for(const c of cs) pergunta = extrairPergunta(c.body) || pergunta;
+      }
+      return {numero:i.number, processo:(/numero:\s*(\S+)/.exec(i.body||'')||[])[1],
+              estado, pergunta};
+    }));
+    pintarFila(pedidos);
+  }catch(e){
+    $('#lista').replaceChildren();
+    const v = document.createElement('p'); v.className = 'vazio';
+    v.textContent = `Não deu para ler a fila: ${e.message}`;
+    $('#lista').append(v);
+  }
+}
+
+/* ---- semaforo: le o que o Mac publica; sem noticia, diz que nao ha noticia ---- */
+async function carregarSinais(){
+  let dados = demo
+    ? {sessoes:{PJE:{ok:true,ate:'5h20'}, SEEU:{ok:true,ate:'5h20'},
+                Lifesize:{ok:false,nota:'sem acesso a esta vara'}}, batimento:'agora'}
+    : null;
+  if(!dados){
+    try{ dados = await (await fetch('sessoes.json',{cache:'no-store'})).json(); }
+    catch{ dados = {sessoes:{}, batimento:null}; }
+  }
+  const cx = $('#sinais'); cx.replaceChildren();
+  const entradas = Object.entries(dados.sessoes || {});
+  if(!entradas.length){
+    const s = document.createElement('span'); s.className = 'sinal';
+    s.innerHTML = '<i class="bolha"></i>';
+    s.append(document.createTextNode('sem notícia do Mac'));
+    cx.append(s); return;
+  }
+  for(const [nome, v] of entradas){
+    const s = document.createElement('span'); s.className = 'sinal';
+    const b = document.createElement('i');
+    b.className = 'bolha ' + (v.ok ? 'ok' : v.nota ? 'alerta' : 'ruim');
+    s.append(b, document.createTextNode(nome));
+    s.title = v.ok ? `válido por mais ${v.ate}` : (v.nota || 'fora do ar');
+    cx.append(s);
+  }
+}
+
+const FILA_DEMO = [
+  {numero:14, processo:'0000213-49.2019.8.05.0123', estado:'aguardando',
+   pergunta:{texto:'O processo tem inquérito apartado que não veio junto da denúncia. Trago para a fonte?',
+             opcoes:['Trazer o inquérito e seguir','Seguir sem o inquérito','Cancelar o pedido']}},
+  {numero:13, processo:'8001029-79.2025.8.05.0123', estado:'executando'},
+  {numero:12, processo:'8000316-41.2024.8.05.0123', estado:'concluido'},
+  {numero:11, processo:'8002044-58.2026.8.05.0120', estado:'nada_a_fazer'},
+  {numero:10, processo:'0000008-20.2019.8.05.0123', estado:'falhou'},
+];
+
+/* ---- montagem ---- */
+PIPELINES.forEach(p => {
+  const b = document.createElement('button');
+  b.textContent = p.nome; b.setAttribute('aria-pressed', p.id === pipeline);
+  b.onclick = () => {
+    pipeline = p.id;
+    document.querySelectorAll('#pipes button').forEach(o =>
+      o.setAttribute('aria-pressed', o === b));
+  };
+  $('#pipes').append(b);
+});
+
+$('#numero').addEventListener('input', aoDigitar);
+$('#acionar').addEventListener('click', () => demo
+  ? alert('Demonstração: nada é enviado.') : acionar());
+$('#repo').value = cfg.repo;  $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
+$('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.value.trim();
+
+carregarSinais();
+carregarFila();
+if(!demo) setInterval(carregarFila, 60000);
+</script>
+</body>
+</html>
