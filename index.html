@@ -123,6 +123,8 @@ h1 span{color:var(--fraco);font-weight:400}
   border-radius:.4rem;padding:.6rem .7rem;font:inherit;font-size:.82rem;cursor:pointer;line-height:1.35
 }
 .opcoes button:hover{border-color:var(--atencao)}
+.opcoes button:disabled{opacity:.45;cursor:not-allowed}
+.opcoes button.escolhida{opacity:1;border-color:var(--leitura);color:var(--leitura)}
 .opcoes button:focus-visible{outline:2px solid var(--atencao);outline-offset:2px}
 .vazio{color:var(--fraco);font-size:.88rem;padding:.4rem 0}
 
@@ -358,11 +360,28 @@ async function acionar(){
   }
 }
 
-async function responder(issue, indice, texto){
-  await api(`/issues/${issue}/comments`, {method:'POST', body: JSON.stringify({
-    body: `<!--superjurista:resposta:${indice}-->\nEscolhi: **${texto}**`,
-  })});
-  await carregarFila();
+/* Responder e IRREVERSIVEL na pratica: o pipeline retoma com a escolha. Entao os
+   botoes morrem no primeiro toque. Sem isso o usuario toca de novo -- foi o que
+   aconteceu na estreia: oito toques em 40s, e um deles numa opcao DIFERENTE. */
+async function responder(caixa, issue, indice, texto, botao){
+  caixa.querySelectorAll('button').forEach(b => { b.disabled = true; });
+  const antes = botao.textContent;
+  botao.textContent = 'Enviando…';
+  try{
+    await api(`/issues/${issue}/comments`, {method:'POST', body: JSON.stringify({
+      body: `<!--superjurista:resposta:${indice}-->\nEscolhi: **${texto}**`,
+    })});
+    botao.textContent = `Respondido: ${antes}`;
+    botao.classList.add('escolhida');
+    await carregarFila();
+  }catch(e){
+    botao.textContent = antes;
+    caixa.querySelectorAll('button').forEach(b => { b.disabled = false; });
+    const erro = document.createElement('p');
+    erro.className = 'pergunta'; erro.style.color = 'var(--erro)';
+    erro.textContent = `Não deu para responder: ${e.message}. Tente de novo.`;
+    caixa.after(erro);
+  }
 }
 
 /* A pergunta vem no comentario que o executor publicou. Ler dali evita inventar
@@ -400,7 +419,8 @@ function cartao(p){
     p.pergunta.opcoes.forEach((o,i) => {
       const b = document.createElement('button');
       b.textContent = o;
-      b.onclick = () => demo ? alert('Demonstração: nada é enviado.') : responder(p.numero,i,o);
+      b.onclick = () => demo ? (b.textContent = `Respondido: ${o}`)
+                             : responder(caixa, p.numero, i, o, b);
       caixa.append(b);
     });
     corpo.append(caixa);
