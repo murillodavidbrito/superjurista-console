@@ -536,9 +536,9 @@ descrever();
 $('#numero').addEventListener('input', aoDigitar);
 $('#acionar').addEventListener('click', () => demo
   ? alert('Demonstração: nada é enviado.') : acionar());
-/* Primeira visita: o Ajustes abre sozinho. Esconder o unico passo que falta
-   atras de um toque no rodape e esconder o caminho de quem esta chegando. */
-if(!cfg.repo || !cfg.token) document.querySelector('details').open = true;
+/* O Ajustes fica SEMPRE recolhido: e configuracao, nao rotina -- se abrisse
+   sozinho, roubaria a primeira tela de quem so quer acionar um pedido. Quem
+   chega sem token e levado ate ele pelo aviso da fila, nao por ele se abrir. */
 
 $('#repo').value = cfg.repo;  $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
 $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.value.trim();
