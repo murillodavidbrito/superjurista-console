@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0A0F16">
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Precisão na minuta, agilidade no gabinete.">
@@ -12,11 +13,15 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    Assistente de Minuta — instrumento de precisão.
 
-   O escuro e o mundo assumido: e um aparelho, nao um documento. A variante
-   clara existe porque a tela e usada em corredor de forum e sala de audiencia,
-   onde ha luz demais -- e ela nao e uma inversao, e um instrumento de dia.
+   O escuro e o mundo assumido: e um aparelho, nao um documento -- e um aparelho
+   nao muda de cara porque o sistema operacional mudou de humor. Houve aqui uma
+   variante clara, atada a `prefers-color-scheme`; ela saiu. O `color-scheme:dark`
+   abaixo nao e detalhe: e o que faz o navegador desenhar barra de rolagem, area
+   de arrasto e controles de formulario no escuro tambem, em vez de abrir faixas
+   brancas em volta de uma pagina preta quando o tema do sistema esta claro.
    ═══════════════════════════════════════════════════════════════════════════ */
 :root{
+  color-scheme:dark;
   --breu:#0A0F16; --painel:#111927; --alto:#17212F; --linha:#1F2A3A;
   --tinta:#E2E9F2; --suave:#8595AB; --fraco:#4C5A6E;
   --menta:#6FDDBB; --ambar:#E9B04C; --coral:#E2695C; --safira:#5FA8E8;
@@ -24,15 +29,6 @@
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
   --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
 }
-@media (prefers-color-scheme: light){
-  :root{
-    --breu:#F4F6F9; --painel:#FFFFFF; --alto:#EDF1F6; --linha:#D8E0EA;
-    --tinta:#141C28; --suave:#5A6982; --fraco:#94A2B5;
-    --menta:#10836A; --ambar:#9A6B0C; --coral:#B93E33; --safira:#1E6FB8;
-    --sombra:0 1px 2px rgba(20,28,40,.05), 0 10px 28px -16px rgba(20,28,40,.22);
-  }
-}
-
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
@@ -45,15 +41,20 @@ body{
       display:flex;flex-direction:column;gap:1.9rem}
 
 /* ── a cabeça ───────────────────────────────────────────────────────────────
-   A marca e CONSTRUIDA, nao so composta: duas linhas de peso alto com entreletra
-   negativa e entrelinha curta, um fio, e o lema pendurado nele. O contraste
-   entre esse bloco denso e os micro-rotulos largos e a personalidade da pagina. */
+   A marca e CONSTRUIDA, nao so composta: peso alto com entreletra negativa, um
+   fio embaixo, e o lema pendurado nele. O contraste entre esse bloco denso e os
+   micro-rotulos largos e a personalidade da pagina.
+
+   UMA LINHA, sempre. O `nowrap` proibe a quebra e o clamp em vw da ao titulo por
+   onde encolher em vez dela: 20 caracteres em caixa-alta so cabem em 320px se a
+   fonte puder ceder. O peso menor de "de Minuta" e o que ainda separa o nome do
+   complemento agora que eles dividem a mesma linha. */
 header{display:flex;flex-direction:column;gap:.85rem}
 .marca{
-  font-size:clamp(1.55rem,8.2vw,2rem); font-weight:760; line-height:.94;
-  letter-spacing:-.035em; text-transform:uppercase; text-wrap:balance;
+  font-size:clamp(1.2rem,7.2vw,1.8rem); font-weight:760; line-height:1.05;
+  letter-spacing:-.035em; text-transform:uppercase; white-space:nowrap;
 }
-.marca em{display:block;font-style:normal;color:var(--suave);font-weight:600}
+.marca em{font-style:normal;color:var(--suave);font-weight:600}
 .regua-marca{height:1px;background:var(--linha);position:relative}
 .regua-marca::after{content:"";position:absolute;left:0;top:0;width:2.6rem;height:1px;background:var(--menta)}
 .lema{font-size:.775rem;color:var(--suave)}
@@ -142,7 +143,6 @@ header{display:flex;flex-direction:column;gap:.85rem}
 .acionar:active:not(:disabled){transform:scale(.985)}
 .acionar:disabled{background:var(--alto);color:var(--fraco);cursor:not-allowed}
 .acionar:focus-visible{outline:2px solid var(--tinta);outline-offset:2px}
-@media (prefers-color-scheme: light){ .acionar{color:#FFF} }
 
 /* ── o feed ─────────────────────────────────────────────────────────────────
    O estado e uma PILULA e um fio superior, nao uma barra lateral -- barra de
@@ -215,7 +215,7 @@ header,.bancada,.fila,details{animation:surgir .5s cubic-bezier(.2,.8,.25,1) bot
 <div class="wrap">
 
 <header>
-  <h1 class="marca">Assistente<em>de Minuta</em></h1>
+  <h1 class="marca">Assistente <em>de Minuta</em></h1>
   <div class="regua-marca"></div>
   <p class="lema">Precisão na minuta, agilidade no gabinete</p>
   <div class="sinais" id="sinais"></div>
