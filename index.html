@@ -206,7 +206,13 @@ details input{
   border-radius:.5rem;padding:.65rem .75rem;color:var(--tinta);font:inherit;font-size:.85rem
 }
 details input:focus{outline:2px solid var(--menta);outline-offset:1px}
+details .testar{
+  margin-top:.75rem;background:var(--alto);border:1px solid var(--linha);border-radius:.5rem;
+  color:var(--tinta);font:inherit;font-size:.78rem;padding:.55rem .9rem;cursor:pointer
+}
+details .testar:disabled{color:var(--fraco);cursor:progress}
 details p{font-size:.755rem;color:var(--fraco);margin-top:.7rem;line-height:1.55}
+details p#diag:empty{display:none}
 details p.cofre{color:var(--suave)}
 details p.cofre.alerta{color:var(--ambar)}
 
@@ -257,6 +263,8 @@ header,.bancada,.fila,details{animation:surgir .5s cubic-bezier(.2,.8,.25,1) bot
   <summary>Ajustes</summary>
   <input id="repo" placeholder="murillodavidbrito/superjurista-pedidos" autocapitalize="off" spellcheck="false">
   <input id="token" type="password" placeholder="cole aqui o token (começa com github_pat_)" autocomplete="off">
+  <button type="button" id="testar" class="testar">Testar ligação</button>
+  <p id="diag" class="cofre"></p>
   <p>O token fica só neste aparelho. Dê a ele escopo <em>Issues: read &amp; write</em> num
      repositório e nada mais — em especial, nada de <em>Contents</em>.</p>
 </details>
@@ -340,6 +348,38 @@ const cfg = {
   get token(){ return cofre.ler('sj.token'); }, set token(v){ cofre.gravar('sj.token', v); },
 };
 
+/* O campo do repositorio quer "dono/repo", mas o que se tem a mao no celular e o
+   ENDERECO da pagina do repositorio. Colar o link inteiro montava uma URL
+   invalida da API, e o fetch morria antes de sair -- o navegador dizia so
+   "Load failed", que nao acusa nada. Entao a pagina aceita o link e o reduz. */
+const RE_REPO = /^[\w.-]+\/[\w.-]+$/;
+const normalizarRepo = v => (v || '').trim()
+  .replace(/^https?:\/\//i, '').replace(/^(www\.)?github\.com\//i, '')
+  .replace(/^@/, '')
+  .replace(/\/+$/, '')          /* a barra final vem antes: em ".git/" ela esconde o .git */
+  .replace(/\.git$/i, '')
+  .replace(/\/+$/, '');
+
+/* O que impede o pedido de sair, dito antes de tentar. Vale tanto para a fila
+   quanto para o botao: e sempre a mesma pergunta. */
+function problemaDeConfiguracao(){
+  const repo = cfg.repo;
+  if(!repo)                return 'Falta o repositório da fila, em Ajustes (formato dono/repo).';
+  if(!RE_REPO.test(repo))  return `O repositório "${repo}" não está no formato dono/repo. Corrija em Ajustes.`;
+  if(!cfg.token)           return 'Falta o token, em Ajustes. Alguns navegadores de celular apagam o ' +
+                                  'token sozinhos depois de uns dias — se ele sumiu, cole de novo.';
+  return null;
+}
+
+/* O status do GitHub dito em portugues e com o que fazer. "GitHub respondeu 401"
+   nao ensina ninguem a consertar nada. */
+const RECADO_HTTP = {
+  401:'O token não foi aceito — inválido ou expirado. Gere outro e cole em Ajustes.',
+  403:'O token não tem permissão de Issues neste repositório (ou o GitHub está limitando o uso).',
+  404:'Repositório não encontrado: confira o nome em Ajustes e se o token alcança esse repositório.',
+  422:'O GitHub recusou o conteúdo do pedido.',
+};
+
 const AVISO_COFRE = {
   permanente: '',
   sessao: 'Este navegador não guarda dados entre visitas — provavelmente aba privada. ' +
@@ -411,12 +451,22 @@ function aoDigitar(){
 
 /* ---- GitHub ---- */
 async function api(caminho, opcoes = {}){
-  const r = await fetch(`https://api.github.com/repos/${cfg.repo}${caminho}`, {
-    ...opcoes,
-    headers:{Authorization:`Bearer ${cfg.token}`, Accept:'application/vnd.github+json',
-             'Content-Type':'application/json', ...(opcoes.headers||{})},
-  });
-  if(!r.ok) throw new Error(`GitHub respondeu ${r.status}`);
+  let r;
+  try{
+    r = await fetch(`https://api.github.com/repos/${cfg.repo}${caminho}`, {
+      ...opcoes,
+      headers:{Authorization:`Bearer ${cfg.token}`, Accept:'application/vnd.github+json',
+               'Content-Type':'application/json', ...(opcoes.headers||{})},
+    });
+  }catch{
+    /* O fetch so lanca quando a requisicao nem chegou a sair: sem rede, ou URL
+       invalida por causa do repositorio. O navegador chama isso de "Load failed"
+       (Safari) ou "Failed to fetch" (Chrome) -- duas frases que nao dizem a
+       ninguem o que fazer. Se o problema e a configuracao, ele e nomeado. */
+    throw new Error(problemaDeConfiguracao() ||
+      'Não foi possível falar com o GitHub. Verifique a conexão deste aparelho.');
+  }
+  if(!r.ok) throw new Error(RECADO_HTTP[r.status] || `GitHub respondeu ${r.status}.`);
   return r.json();
 }
 
@@ -440,6 +490,16 @@ function acompanhar(){
 
 async function acionar(){
   if(enviando) return;                    /* toque duplo nao vira pedido duplo */
+
+  /* Antes do recibo: se a fila nem esta ligada, prometer "recebido" seria
+     mentira. Abre os Ajustes junto -- o problema esta la dentro. */
+  const problema = demo ? null : problemaDeConfiguracao();
+  if(problema){
+    $('#aviso').textContent = problema;
+    document.querySelector('details').open = true;
+    return;
+  }
+
   const numero = $('#numero').value;
   const nome = (PIPELINES.find(p => p.id === pipeline) || {}).nome || pipeline;
   const botao = $('#acionar');
@@ -624,10 +684,8 @@ function pintarFila(pedidos, recado){
 
 async function carregarFila(){
   if(demo){ ultimaFila = FILA_DEMO; ultimoRecado = ''; return repintar(); }
-  if(!cfg.repo || !cfg.token){
-    ultimoRecado = 'Falta ligar a fila: preencha o repositório e o token logo abaixo, em Ajustes.';
-    return repintar();
-  }
+  const problema = problemaDeConfiguracao();
+  if(problema){ ultimoRecado = problema; return repintar(); }
   try{
     const issues = await api('/issues?labels=pedido&state=open&per_page=30');
     const pedidos = await Promise.all(issues.map(async i => {
@@ -743,8 +801,30 @@ $('#numero').addEventListener('input', aoDigitar);
    rede por uma espera. Assim o recibo que se ve em ?demo=1 e o recibo de
    verdade, e nao uma encenacao que pode divergir dele sem ninguem notar. */
 $('#acionar').addEventListener('click', acionar);
-$('#repo').value = cfg.repo;   $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
+/* O que ja estava guardado tambem passa pela reducao -- quem colou um link antes
+   desta versao nao tem por que descobrir sozinho que era esse o defeito. */
+cfg.repo = normalizarRepo(cfg.repo);
+$('#repo').value = cfg.repo;
+$('#repo').oninput = e => cfg.repo = normalizarRepo(e.target.value);
+$('#repo').onblur  = e => e.target.value = cfg.repo;   /* mostra o que ficou guardado */
 $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.value.trim();
+
+/* Testar a ligacao aqui e o que separa "o console está quebrado" de "o token
+   expirou". Sem isso, um erro de envio no celular vira adivinhacao. */
+$('#testar').onclick = async () => {
+  const botao = $('#testar'), d = $('#diag');
+  d.classList.remove('alerta');
+  const problema = problemaDeConfiguracao();
+  if(problema){ d.textContent = problema; d.classList.add('alerta'); return; }
+  botao.disabled = true; d.textContent = 'Testando…';
+  try{
+    const repo = await api('');
+    d.textContent = `Ligação boa: ${repo.full_name}. O token responde.`;
+    carregarFila();
+  }catch(e){
+    d.textContent = e.message; d.classList.add('alerta');
+  }finally{ botao.disabled = false; }
+};
 
 /* Diz em que pe esta o armazenamento. Sem isso, o token sumir vira misterio. */
 {
