@@ -1,10 +1,10 @@
 {
- "gerado": "2026-07-27T09:57:37.655732+00:00",
+ "gerado": "2026-07-27T12:20:08.574523+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "erro",
+   "nivel": "aviso",
    "ate": "",
-   "nota": "sessao do pje indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
+   "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "erro",
+   "nivel": "aviso",
    "ate": "",
-   "nota": "vigia de sessao parado ha 42 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
+   "nota": "estado da sessao do midias inconclusivo (rede?) — seguindo mesmo assim"
   }
  },
- "batimento": "2026-07-27T09:57:37.655732+00:00"
+ "batimento": "2026-07-27T12:20:08.574523+00:00"
 }
