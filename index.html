@@ -158,7 +158,13 @@ header{display:flex;flex-direction:column;gap:.85rem}
 .cartao[data-estado=aguardando]::before{background:var(--ambar)}
 .cartao[data-estado=concluido]::before{background:var(--menta)}
 .cartao[data-estado=falhou]::before,.cartao[data-estado=recusado]::before{background:var(--coral)}
+/* O cartao do pedido que ainda esta subindo: mesma forma dos outros, meio tom
+   abaixo e com o fio pulsando. Ele nasce no toque, antes de existir issue --
+   e por isso que ele existe: dar corpo ao recibo enquanto a rede responde. */
+.cartao[data-estado=enviando]{opacity:.72}
+.cartao[data-estado=enviando]::before{background:var(--suave);animation:pulsar 1.2s ease-in-out infinite}
 @keyframes varrer{from{background-position:-45% 0}to{background-position:145% 0}}
+@keyframes pulsar{0%,100%{opacity:.35}50%{opacity:1}}
 
 .proc{font-family:var(--mono);font-size:.845rem;font-variant-numeric:tabular-nums;
       line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -305,6 +311,10 @@ const PIPELINES = [
 const ESTADOS = {
   enfileirado:'na fila', executando:'trabalhando', aguardando:'precisa de você',
   concluido:'pronto', nada_a_fazer:'nada a fazer', falhou:'falhou', recusado:'recusado',
+  /* "enviando" nao vem de rotulo do GitHub: e o estado que so existe nesta tela,
+     entre o toque e a confirmacao. Fica por ultimo porque estadoDe() percorre
+     estas chaves na ordem e nenhuma issue tera um rotulo com este nome. */
+  enviando:'enviando…',
 };
 
 const $ = s => document.querySelector(s);
@@ -341,6 +351,37 @@ const AVISO_COFRE = {
 let pipeline = 'pje';
 let insistindo = null;
 const demo = new URLSearchParams(location.search).has('demo');
+
+/* ---- o recibo ------------------------------------------------------------
+   O toque tem de responder na hora. Quem nao ve resposta aciona de novo -- e
+   dois pedidos iguais custam dois downloads do PJe, nao dois cliques.
+
+   `pendentes` sao os pedidos ja tocados que ainda nao apareceram na fila do
+   GitHub. Eles viram cartao imediatamente, no mesmo lugar e com a mesma forma
+   do cartao de verdade, e somem sozinhos quando o pedido real chega (ou quando
+   envelhecem, se o envio tiver morrido no caminho).
+
+   `ultimaFila` e o ultimo retrato da fila. Serve para responder "ja existe
+   pedido para este processo?" sem ir a rede -- que era a primeira das duas
+   idas ao GitHub que aconteciam ANTES de a tela reagir ao toque. */
+let pendentes = [];
+let ultimaFila = [];
+let ultimoRecado = '';
+let enviando = false;
+const VALIDADE_PENDENTE = 5 * 60000;
+
+const espera = ms => new Promise(r => setTimeout(r, ms));
+
+/* Repintar e sempre "o ultimo retrato + o ultimo recado". Sem guardar o recado,
+   uma repintura fora da carregarFila apagaria o "falta ligar a fila". */
+const repintar = () => pintarFila(ultimaFila, ultimoRecado);
+
+function podarPendentes(pedidos){
+  const agora = Date.now();
+  pendentes = pendentes.filter(p =>
+    !pedidos.some(r => r.processo === p.processo) &&
+    agora - new Date(p.quando) < VALIDADE_PENDENTE);
+}
 
 /* Mede a largura de um caractere do mostrador e publica como --col, para a escala
    ancorar cada rotulo na coluna exata do seu campo. Medir e melhor que supor 0.6em:
@@ -389,41 +430,92 @@ async function jaNaFila(numero){
   }catch{ return null; }
 }
 
+/* Depois de enviar, o pedido ainda leva de segundos a minutos para o executor
+   pegar. Reler a fila so de minuto em minuto deixava o cartao em "na fila" muito
+   depois de ja estar rodando -- justamente na janela em que o usuario ainda esta
+   olhando a tela. Estas conferencias curtas cobrem essa janela. */
+function acompanhar(){
+  [0, 4000, 12000, 30000].forEach(t => setTimeout(carregarFila, t));
+}
+
 async function acionar(){
+  if(enviando) return;                    /* toque duplo nao vira pedido duplo */
   const numero = $('#numero').value;
   const nome = (PIPELINES.find(p => p.id === pipeline) || {}).nome || pipeline;
   const botao = $('#acionar');
 
-  if(insistindo !== numero){
-    const aberto = await jaNaFila(numero);
-    if(aberto){
-      insistindo = numero;
-      $('#aviso').textContent =
-        `Já existe o pedido #${aberto.number} para este processo, em andamento. ` +
-        `Toque de novo para acionar "${nome}" assim mesmo.`;
-      return;
-    }
+  /* A duplicata obvia -- a que esta na tela, porque acabou de ser pedida -- e
+     respondida daqui, do retrato que a pagina ja tem. Sem ida a rede: e este o
+     caso que o usuario cria quando acha que o primeiro toque nao pegou. */
+  const naTela = ultimaFila.find(p => p.processo === numero);
+  if(insistindo !== numero && naTela){
+    insistindo = numero;
+    $('#aviso').textContent =
+      `Já existe o pedido #${naTela.numero} para este processo, em andamento. ` +
+      `Toque de novo para acionar "${nome}" assim mesmo.`;
+    return;
   }
-  insistindo = null;
 
+  /* RECIBO -- tudo daqui ate o primeiro await e sincrono, entao acontece no
+     mesmo quadro do toque: botao travado, campo limpo, aviso na tela e o cartao
+     ja na fila. O que vier de rede vem por tras disso. */
+  enviando = true;
   botao.disabled = true; botao.textContent = 'Enviando…';
+  const pendente = {numero:null, processo:numero, estado:'enviando',
+                    quando:new Date().toISOString()};
+  pendentes.unshift(pendente);
+  $('#numero').value = ''; aoDigitar();
+  botao.disabled = true;                  /* aoDigitar reabilita pelo campo vazio */
+  $('#aviso').textContent = 'Pedido recebido, aguarde…';
+  $('.bancada').classList.add('confirmado');
+  repintar();
+
+  const desistir = recado => {            /* nada foi criado: desfaz o recibo */
+    pendentes = pendentes.filter(p => p !== pendente);
+    $('#numero').value = numero; aoDigitar();
+    $('.bancada').classList.remove('confirmado');
+    $('#aviso').textContent = recado;
+    repintar();
+  };
+
   try{
-    const criada = await api('/issues', {method:'POST', body: JSON.stringify({
-      title: `${pipeline} · ${numero}`,
-      body: `pipeline: ${pipeline}\nnumero: ${numero}\n`,
-      labels: ['pedido','enfileirado'],
-    })});
-    $('#numero').value = ''; aoDigitar();
+    /* A confirmacao remota continua existindo -- ela pega o pedido feito ha
+       pouco de OUTRO aparelho, que o retrato local nao conhece. So que agora
+       roda atras do recibo, e nao na frente dele. */
+    if(!demo && insistindo !== numero){
+      const aberto = await jaNaFila(numero);
+      if(aberto){
+        insistindo = numero;
+        desistir(`Já existe o pedido #${aberto.number} para este processo, em ` +
+                 `andamento. Toque de novo para acionar "${nome}" assim mesmo.`);
+        return;
+      }
+    }
+    insistindo = null;
+
+    const criada = demo
+      ? await espera(1100).then(() => ({number:null}))
+      : await api('/issues', {method:'POST', body: JSON.stringify({
+          title: `${pipeline} · ${numero}`,
+          body: `pipeline: ${pipeline}\nnumero: ${numero}\n`,
+          labels: ['pedido','enfileirado'],
+        })});
+
     /* A confirmacao fica AQUI, colada no campo. O cartao novo aparece na fila,
        mas num celular a fila esta fora da tela -- e quem nao ve confirmacao
        aciona de novo. */
-    $('#aviso').textContent = `Pedido #${criada.number} na fila: ${nome}.`;
-    $('.bancada').classList.add('confirmado');
+    pendente.numero = criada.number;
+    pendente.estado = 'enfileirado';
+    $('#aviso').textContent = demo
+      ? `Pedido na fila: ${nome}. (demonstração: nada foi enviado)`
+      : `Pedido #${criada.number} na fila: ${nome}.`;
     setTimeout(() => $('.bancada').classList.remove('confirmado'), 6000);
-    await carregarFila();
+    repintar();
+    if(!demo) acompanhar();               /* a fila se atualiza sozinha, sem prender o botao */
   }catch(e){
-    $('#aviso').textContent = `Não deu para enviar: ${e.message}`;
+    desistir(`Não deu para enviar: ${e.message}`);
   }finally{
+    enviando = false;
     botao.textContent = 'Minutar';
     botao.disabled = !numeroConfere($('#numero').value);
   }
@@ -491,7 +583,8 @@ function cartao(p){
   proc.textContent = p.processo || '—';
   const l2 = document.createElement('div'); l2.className = 'linha2';
   const meta = document.createElement('span'); meta.className = 'meta';
-  meta.textContent = [`#${p.numero}`, desde(p.quando)].filter(Boolean).join(' · ');
+  meta.textContent = [p.numero ? `#${p.numero}` : '', desde(p.quando)]
+                     .filter(Boolean).join(' · ');
   const pill = document.createElement('span'); pill.className = 'pill';
   pill.textContent = ESTADOS[p.estado] || p.estado;
   l2.append(meta, pill);
@@ -514,21 +607,27 @@ function cartao(p){
   return el;
 }
 
+/* Os pendentes entram na frente: sao os mais novos, e e o recem-tocado que o
+   usuario esta procurando na tela. */
 function pintarFila(pedidos, recado){
   const lista = $('#lista');
   lista.replaceChildren();
-  if(recado || !pedidos.length){
+  const todos = pendentes.concat(pedidos || []);
+  if(recado || !todos.length){
     const v = document.createElement('p'); v.className = 'vazio';
     v.textContent = recado || 'Nada na fila. Comece por um número acima.';
-    lista.append(v); return;
+    lista.append(v);          /* o recado nao substitui os cartoes: fica sobre eles,
+                                 senao uma falha de leitura apagaria o recibo */
   }
-  pedidos.forEach(p => lista.append(cartao(p)));
+  todos.forEach(p => lista.append(cartao(p)));
 }
 
 async function carregarFila(){
-  if(demo) return pintarFila(FILA_DEMO);
-  if(!cfg.repo || !cfg.token)
-    return pintarFila([], 'Falta ligar a fila: preencha o repositório e o token logo abaixo, em Ajustes.');
+  if(demo){ ultimaFila = FILA_DEMO; ultimoRecado = ''; return repintar(); }
+  if(!cfg.repo || !cfg.token){
+    ultimoRecado = 'Falta ligar a fila: preencha o repositório e o token logo abaixo, em Ajustes.';
+    return repintar();
+  }
   try{
     const issues = await api('/issues?labels=pedido&state=open&per_page=30');
     const pedidos = await Promise.all(issues.map(async i => {
@@ -542,9 +641,12 @@ async function carregarFila(){
       return {numero:i.number, processo:(/numero:\s*(\S+)/.exec(i.body||'')||[])[1],
               estado, pergunta, quando:i.updated_at};
     }));
-    pintarFila(pedidos);
+    ultimaFila = pedidos; ultimoRecado = '';
+    podarPendentes(pedidos);   /* o pedido chegou de verdade: o cartao provisorio sai */
+    repintar();
   }catch(e){
-    pintarFila([], `Não deu para ler a fila: ${e.message}`);
+    ultimoRecado = `Não deu para ler a fila: ${e.message}`;
+    repintar();
   }
 }
 
@@ -637,8 +739,10 @@ medirColuna();
 addEventListener('resize', medirColuna);
 
 $('#numero').addEventListener('input', aoDigitar);
-$('#acionar').addEventListener('click', () => demo
-  ? ($('#aviso').textContent = 'Demonstração: nada é enviado.') : acionar());
+/* A demonstracao passa pelo MESMO acionar(): o que ela troca e so a chamada de
+   rede por uma espera. Assim o recibo que se ve em ?demo=1 e o recibo de
+   verdade, e nao uma encenacao que pode divergir dele sem ninguem notar. */
+$('#acionar').addEventListener('click', acionar);
 $('#repo').value = cfg.repo;   $('#repo').oninput  = e => cfg.repo  = e.target.value.trim();
 $('#token').value = cfg.token; $('#token').oninput = e => cfg.token = e.target.value.trim();
 
