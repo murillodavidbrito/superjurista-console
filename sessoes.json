@@ -1,10 +1,10 @@
 {
- "gerado": "2026-07-30T21:19:25.911787+00:00",
+ "gerado": "2026-07-30T21:20:29.478828+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "erro",
    "ate": "",
-   "nota": "sessao SSO venceu as 18:09 (teto de 8 h) — refaca o login com o certificado digital no Chrome"
+   "nota": "sessao do pje indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": ""
   }
  },
- "batimento": "2026-07-30T21:19:25.911787+00:00"
+ "batimento": "2026-07-30T21:20:29.478828+00:00"
 }
