@@ -1,10 +1,10 @@
 {
- "gerado": "2026-07-31T21:14:26.889327+00:00",
+ "gerado": "2026-07-31T21:15:48.788139+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "ok",
-   "ate": "1h48",
-   "nota": ""
+   "nivel": "erro",
+   "ate": "1h46",
+   "nota": "sessao do pje indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": ""
   }
  },
- "batimento": "2026-07-31T21:14:26.889327+00:00"
+ "batimento": "2026-07-31T21:15:48.788139+00:00"
 }
