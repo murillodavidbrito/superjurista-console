@@ -1,10 +1,10 @@
 {
- "gerado": "2026-08-04T16:57:07.966630+00:00",
+ "gerado": "2026-08-04T18:41:06.513777+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "ok",
-   "ate": "5h50",
-   "nota": ""
+   "nivel": "erro",
+   "ate": "4h06",
+   "nota": "vigia de sessao parado ha 107 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "ok",
+   "nivel": "erro",
    "ate": "",
-   "nota": ""
+   "nota": "vigia de sessao parado ha 107 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
   }
  },
- "batimento": "2026-08-04T16:57:07.966630+00:00"
+ "batimento": "2026-08-04T18:41:06.513777+00:00"
 }
