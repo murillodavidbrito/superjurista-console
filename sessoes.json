@@ -1,10 +1,10 @@
 {
- "gerado": "2026-08-04T02:40:00.497574+00:00",
+ "gerado": "2026-08-04T02:41:04.185888+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "erro",
+   "nivel": "aviso",
    "ate": "",
-   "nota": "sessao SSO venceu as 23:31 (teto de 8 h) — refaca o login com o certificado digital no Chrome"
+   "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": ""
   }
  },
- "batimento": "2026-08-04T02:40:00.497574+00:00"
+ "batimento": "2026-08-04T02:41:04.185888+00:00"
 }
