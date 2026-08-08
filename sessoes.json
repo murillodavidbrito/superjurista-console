@@ -1,9 +1,9 @@
 {
- "gerado": "2026-08-08T15:34:08.931810+00:00",
+ "gerado": "2026-08-08T15:35:12.708891+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "erro",
-   "ate": "42 min",
+   "ate": "41 min",
    "nota": "sessao do pje indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
   },
   "SEEU": {
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (ausente). De um F5 na aba logada no Chrome e rode de novo."
   }
  },
- "batimento": "2026-08-08T15:34:08.931810+00:00"
+ "batimento": "2026-08-08T15:35:12.708891+00:00"
 }
