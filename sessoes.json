@@ -1,10 +1,10 @@
 {
- "gerado": "2026-08-09T23:25:30.400305+00:00",
+ "gerado": "2026-08-09T23:26:33.987773+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "erro",
+   "nivel": "aviso",
    "ate": "",
-   "nota": "sessao SSO venceu as 20:18 (teto de 8 h) — refaca o login com o certificado digital no Chrome"
+   "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (ausente). De um F5 na aba logada no Chrome e rode de novo."
   }
  },
- "batimento": "2026-08-09T23:25:30.400305+00:00"
+ "batimento": "2026-08-09T23:26:33.987773+00:00"
 }
