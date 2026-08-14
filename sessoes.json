@@ -1,9 +1,9 @@
 {
- "gerado": "2026-08-14T02:55:31.510534+00:00",
+ "gerado": "2026-08-14T03:30:33.212961+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "erro",
-   "ate": "4h15",
+   "ate": "3h40",
    "nota": "sessao do pje indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
   },
   "SEEU": {
@@ -14,8 +14,8 @@
   "PJe Mídias": {
    "nivel": "erro",
    "ate": "",
-   "nota": "vigia de sessao parado ha 84 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
+   "nota": "vigia de sessao parado ha 119 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
   }
  },
- "batimento": "2026-08-14T02:55:31.510534+00:00"
+ "batimento": "2026-08-14T03:30:33.212961+00:00"
 }
