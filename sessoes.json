@@ -1,10 +1,10 @@
 {
- "gerado": "2026-08-18T10:49:26.823486+00:00",
+ "gerado": "2026-08-18T15:05:01.621397+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "ok",
-   "ate": "7h09",
-   "nota": ""
+   "nivel": "erro",
+   "ate": "2h53",
+   "nota": "vigia de sessao parado ha 74 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
   }
  },
- "batimento": "2026-08-18T10:49:26.823486+00:00"
+ "batimento": "2026-08-18T15:05:01.621397+00:00"
 }
