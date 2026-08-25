@@ -1,10 +1,10 @@
 {
- "gerado": "2026-08-25T02:09:06.628408+00:00",
+ "gerado": "2026-08-25T02:10:12.843320+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "7 min",
-   "nota": "sessao vence as 23:16 (em 7 min) — tenha o certificado digital a mao"
+   "ate": "6 min",
+   "nota": "sessao vence as 23:16 (em 6 min) — tenha o certificado digital a mao"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": ""
   }
  },
- "batimento": "2026-08-25T02:09:06.628408+00:00"
+ "batimento": "2026-08-25T02:10:12.843320+00:00"
 }
