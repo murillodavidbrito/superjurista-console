@@ -1,5 +1,5 @@
 {
- "gerado": "2026-09-06T01:13:09.897542+00:00",
+ "gerado": "2026-09-06T01:14:28.898683+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "erro",
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "aviso",
+   "nivel": "erro",
    "ate": "",
-   "nota": "sem vigia de sessao (daemon de captura nao instalado) — seguindo sem checagem previa"
+   "nota": "sessao do midias indisponivel (ausente). De um F5 na aba logada no Chrome e rode de novo."
   }
  },
- "batimento": "2026-09-06T01:13:09.897542+00:00"
+ "batimento": "2026-09-06T01:14:28.898683+00:00"
 }
