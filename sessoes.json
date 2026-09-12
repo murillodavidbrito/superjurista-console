@@ -1,10 +1,10 @@
 {
- "gerado": "2026-09-12T16:55:08.662751+00:00",
+ "gerado": "2026-09-12T16:56:12.907786+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "6 min",
-   "nota": "sessao vence as 14:01 (em 6 min) — tenha o certificado digital a mao"
+   "ate": "5 min",
+   "nota": "sessao vence as 14:01 (em 5 min) — tenha o certificado digital a mao"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
   }
  },
- "batimento": "2026-09-12T16:55:08.662751+00:00"
+ "batimento": "2026-09-12T16:56:12.907786+00:00"
 }
