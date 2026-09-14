@@ -1,10 +1,10 @@
 {
- "gerado": "2026-09-14T09:02:36.305214+00:00",
+ "gerado": "2026-09-14T09:03:40.292203+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "erro",
-   "ate": "",
-   "nota": "sessao do pje indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
+   "nivel": "ok",
+   "ate": "7h50",
+   "nota": ""
   },
   "SEEU": {
    "nivel": "aviso",
@@ -14,8 +14,8 @@
   "PJe Mídias": {
    "nivel": "erro",
    "ate": "",
-   "nota": "sessao do midias indisponivel (expirada). De um F5 na aba logada no Chrome e rode de novo."
+   "nota": "sessao do midias indisponivel (ausente). De um F5 na aba logada no Chrome e rode de novo."
   }
  },
- "batimento": "2026-09-14T09:02:36.305214+00:00"
+ "batimento": "2026-09-14T09:03:40.292203+00:00"
 }
