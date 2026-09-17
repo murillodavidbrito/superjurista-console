@@ -1,10 +1,10 @@
 {
- "gerado": "2026-09-17T00:09:20.457413+00:00",
+ "gerado": "2026-09-17T00:25:50.317879+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "erro",
-   "ate": "4h21",
-   "nota": "vigia de sessao parado ha 158 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
+   "ate": "4h04",
+   "nota": "vigia de sessao parado ha 174 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -14,8 +14,8 @@
   "PJe Mídias": {
    "nivel": "erro",
    "ate": "",
-   "nota": "vigia de sessao parado ha 158 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
+   "nota": "vigia de sessao parado ha 174 min — o daemon pode ter morrido. Confira com: python3 scripts/captura_sessao_pje.py --status"
   }
  },
- "batimento": "2026-09-17T00:09:20.457413+00:00"
+ "batimento": "2026-09-17T00:25:50.317879+00:00"
 }
