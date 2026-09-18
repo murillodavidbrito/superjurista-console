@@ -1,10 +1,10 @@
 {
- "gerado": "2026-09-18T01:47:27.104302+00:00",
+ "gerado": "2026-09-18T01:48:31.191765+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "aviso",
-   "ate": "5h46",
-   "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
+   "nivel": "erro",
+   "ate": "5h45",
+   "nota": "sessao do pje indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   },
   "SEEU": {
    "nivel": "aviso",
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "aviso",
+   "nivel": "erro",
    "ate": "",
-   "nota": "estado da sessao do midias inconclusivo (rede?) — seguindo mesmo assim"
+   "nota": "sessao do midias indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   }
  },
- "batimento": "2026-09-18T01:47:27.104302+00:00"
+ "batimento": "2026-09-18T01:48:31.191765+00:00"
 }
