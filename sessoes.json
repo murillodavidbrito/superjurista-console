@@ -1,9 +1,9 @@
 {
- "gerado": "2026-09-22T21:32:18.685949+00:00",
+ "gerado": "2026-09-22T21:33:22.098062+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "1h47",
+   "ate": "1h45",
    "nota": "medicao da sessao do pje descreve um login anterior (dizia 'expirada', sid diferente do login atual) — seguindo mesmo assim"
   },
   "SEEU": {
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (ausente). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   }
  },
- "batimento": "2026-09-22T21:32:18.685949+00:00"
+ "batimento": "2026-09-22T21:33:22.098062+00:00"
 }
