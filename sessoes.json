@@ -1,5 +1,5 @@
 {
- "gerado": "2026-09-28T10:58:15.401044+00:00",
+ "gerado": "2026-09-28T11:00:52.418089+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "ok",
+   "nivel": "aviso",
    "ate": "",
-   "nota": ""
+   "nota": "estado da sessao do midias inconclusivo (rede?) — seguindo mesmo assim"
   }
  },
- "batimento": "2026-09-28T10:58:15.401044+00:00"
+ "batimento": "2026-09-28T11:00:52.418089+00:00"
 }
