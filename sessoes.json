@@ -1,9 +1,9 @@
 {
- "gerado": "2026-09-29T13:36:28.294725+00:00",
+ "gerado": "2026-09-29T13:37:33.589687+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "ok",
-   "ate": "32 min",
+   "ate": "31 min",
    "nota": ""
   },
   "SEEU": {
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   }
  },
- "batimento": "2026-09-29T13:36:28.294725+00:00"
+ "batimento": "2026-09-29T13:37:33.589687+00:00"
 }
