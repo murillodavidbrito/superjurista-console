@@ -1,10 +1,10 @@
 {
- "gerado": "2026-09-29T05:47:23.217172+00:00",
+ "gerado": "2026-09-29T05:48:27.093369+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "ok",
-   "ate": "4h21",
-   "nota": ""
+   "nivel": "erro",
+   "ate": "4h20",
+   "nota": "sessao do pje indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   }
  },
- "batimento": "2026-09-29T05:47:23.217172+00:00"
+ "batimento": "2026-09-29T05:48:27.093369+00:00"
 }
