@@ -1,9 +1,9 @@
 {
- "gerado": "2026-10-04T21:50:19.616223+00:00",
+ "gerado": "2026-10-04T21:51:23.025020+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "1h30",
+   "ate": "1h29",
    "nota": "medicao da sessao do pje descreve um login anterior (dizia 'expirada', sid diferente do login atual) — seguindo mesmo assim"
   },
   "SEEU": {
@@ -17,5 +17,5 @@
    "nota": ""
   }
  },
- "batimento": "2026-10-04T21:50:19.616223+00:00"
+ "batimento": "2026-10-04T21:51:23.025020+00:00"
 }
