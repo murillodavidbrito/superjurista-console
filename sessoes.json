@@ -1,9 +1,9 @@
 {
- "gerado": "2026-10-27T08:22:07.689085+00:00",
+ "gerado": "2026-10-27T08:23:11.302461+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "40 min",
+   "ate": "38 min",
    "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
   },
   "SEEU": {
@@ -17,5 +17,5 @@
    "nota": "estado da sessao do midias inconclusivo (rede?) — seguindo mesmo assim"
   }
  },
- "batimento": "2026-10-27T08:22:07.689085+00:00"
+ "batimento": "2026-10-27T08:23:11.302461+00:00"
 }
