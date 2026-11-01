@@ -1,10 +1,10 @@
 {
- "gerado": "2026-11-01T11:59:05.978618+00:00",
+ "gerado": "2026-11-01T12:00:10.170580+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "ok",
-   "ate": "6h48",
-   "nota": ""
+   "nivel": "erro",
+   "ate": "6h47",
+   "nota": "sessao do pje indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": ""
   }
  },
- "batimento": "2026-11-01T11:59:05.978618+00:00"
+ "batimento": "2026-11-01T12:00:10.170580+00:00"
 }
