@@ -1,10 +1,10 @@
 {
- "gerado": "2026-11-05T20:05:47.498112+00:00",
+ "gerado": "2026-11-05T20:06:52.435794+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "erro",
-   "ate": "1h48",
-   "nota": "vigia de sessao parado ha 168 min — o daemon pode ter morrido. Confira com: python scripts/captura_sessao_pje.py --status"
+   "ate": "1h47",
+   "nota": "vigia de sessao parado ha 169 min — o daemon pode ter morrido. Confira com: python scripts/captura_sessao_pje.py --status"
   },
   "SEEU": {
    "nivel": "aviso",
@@ -17,5 +17,5 @@
    "nota": "sessao do midias indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
   }
  },
- "batimento": "2026-11-05T20:05:47.498112+00:00"
+ "batimento": "2026-11-05T20:06:52.435794+00:00"
 }
