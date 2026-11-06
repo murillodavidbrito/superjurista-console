@@ -1,9 +1,9 @@
 {
- "gerado": "2026-11-06T16:51:37.444987+00:00",
+ "gerado": "2026-11-06T16:55:46.481524+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "",
+   "ate": "6h54",
    "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
   },
   "SEEU": {
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "erro",
+   "nivel": "aviso",
    "ate": "",
-   "nota": "sessao do midias indisponivel (expirada). Rode: python .claude/skills/pje-download-tjba/scripts/extrair_cookies_har.py --auto --abrir-pje (revalida ao vivo)."
+   "nota": "estado da sessao do midias inconclusivo (rede?) — seguindo mesmo assim"
   }
  },
- "batimento": "2026-11-06T16:51:37.444987+00:00"
+ "batimento": "2026-11-06T16:55:46.481524+00:00"
 }
