@@ -1,5 +1,5 @@
 {
- "gerado": "2026-11-12T12:09:06.955711+00:00",
+ "gerado": "2026-11-12T13:03:06.143244+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "erro",
+   "nivel": "aviso",
    "ate": "",
-   "nota": "vigia de sessao parado ha 143 min — o daemon pode ter morrido. Confira com: python scripts/captura_sessao_pje.py --status"
+   "nota": "estado da sessao do midias inconclusivo (rede?) — seguindo mesmo assim"
   }
  },
- "batimento": "2026-11-12T12:09:06.955711+00:00"
+ "batimento": "2026-11-12T13:03:06.143244+00:00"
 }
