@@ -1,9 +1,9 @@
 {
- "gerado": "2026-11-12T09:50:59.877557+00:00",
+ "gerado": "2026-11-12T11:53:01.997550+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "1h09",
+   "ate": "",
    "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
   },
   "SEEU": {
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "ok",
+   "nivel": "erro",
    "ate": "",
-   "nota": ""
+   "nota": "vigia de sessao parado ha 127 min — o daemon pode ter morrido. Confira com: python scripts/captura_sessao_pje.py --status"
   }
  },
- "batimento": "2026-11-12T09:50:59.877557+00:00"
+ "batimento": "2026-11-12T11:53:01.997550+00:00"
 }
