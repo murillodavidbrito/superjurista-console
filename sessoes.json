@@ -1,5 +1,5 @@
 {
- "gerado": "2026-11-12T11:53:01.997550+00:00",
+ "gerado": "2026-11-12T12:09:06.955711+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
@@ -14,8 +14,8 @@
   "PJe Mídias": {
    "nivel": "erro",
    "ate": "",
-   "nota": "vigia de sessao parado ha 127 min — o daemon pode ter morrido. Confira com: python scripts/captura_sessao_pje.py --status"
+   "nota": "vigia de sessao parado ha 143 min — o daemon pode ter morrido. Confira com: python scripts/captura_sessao_pje.py --status"
   }
  },
- "batimento": "2026-11-12T11:53:01.997550+00:00"
+ "batimento": "2026-11-12T12:09:06.955711+00:00"
 }
