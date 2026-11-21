@@ -1,10 +1,10 @@
 {
- "gerado": "2026-11-21T21:00:32.449454+00:00",
+ "gerado": "2026-11-21T21:01:36.653373+00:00",
  "sessoes": {
   "PJe": {
-   "nivel": "aviso",
-   "ate": "2h12",
-   "nota": "estado da sessao do pje inconclusivo (rede?) — seguindo mesmo assim"
+   "nivel": "ok",
+   "ate": "2h11",
+   "nota": ""
   },
   "SEEU": {
    "nivel": "aviso",
@@ -12,10 +12,10 @@
    "nota": "sem vigia de sessão — o SEEU não é monitorado; pode estar viva"
   },
   "PJe Mídias": {
-   "nivel": "aviso",
+   "nivel": "ok",
    "ate": "",
-   "nota": "estado da sessao do midias inconclusivo (rede?) — seguindo mesmo assim"
+   "nota": ""
   }
  },
- "batimento": "2026-11-21T21:00:32.449454+00:00"
+ "batimento": "2026-11-21T21:01:36.653373+00:00"
 }
