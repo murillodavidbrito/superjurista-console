@@ -1,9 +1,9 @@
 {
- "gerado": "2026-11-23T19:11:16.310086+00:00",
+ "gerado": "2026-11-23T19:12:20.493320+00:00",
  "sessoes": {
   "PJe": {
    "nivel": "aviso",
-   "ate": "4h29",
+   "ate": "4h28",
    "nota": "medicao da sessao do pje e anterior a captura mais recente em disco (dizia 'expirada', com JWT ainda vivo) — seguindo mesmo assim"
   },
   "SEEU": {
@@ -17,5 +17,5 @@
    "nota": ""
   }
  },
- "batimento": "2026-11-23T19:11:16.310086+00:00"
+ "batimento": "2026-11-23T19:12:20.493320+00:00"
 }
